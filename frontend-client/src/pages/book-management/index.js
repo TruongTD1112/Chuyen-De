@@ -1,37 +1,35 @@
 import React, { useState } from 'react'
+import {Switch, Route, useRouteMatch} from 'react-router-dom'
 import BaseLayout from '../../components/BaseLayout'
 import { Button, Card, Row, Col, Menu } from 'antd';
-import {
-    BookOutlined,
-    PicLeftOutlined,
-    FieldTimeOutlined
-} from '@ant-design/icons'
-import BorrowingBook from './BorrowingBookComponent';
+import SideMenu from './SideMenu'
+import BorrowingBooks from './borrowing/BorrowingBooks';
+import AdjournBooks from './adjourn/AdjournBooks'
+import RegisterBorrow from './register'
+import {ADJOURN, BORROWING,REGISTER_BORROW} from '../../redux/reducers/BookManagementMenuReducer'
 
-const BORROWING = 'BORROWING'
-const REGISTER  = 'REGISTER'
-const ADJOURN  = 'ADJOURN'
 
 const BookManagement = props => {
-
+    let {path, url} = useRouteMatch()
     return (
         <BaseLayout>
-        <Row gutter={16}>
-            <Col>
-            <Menu theme="dark" defaultSelectedKeys={[BORROWING]} style={{height:'100vh', width:200, borderRightWidth: 2}}>
-                <Menu.Item key={BORROWING} icon={<BookOutlined/>}>
-                    Sách đang mượn
-                </Menu.Item>
-                <Menu.Item key={REGISTER} icon={<PicLeftOutlined/>}>
-                    Đăng ký mượn / trả
-                </Menu.Item>
-                <Menu.Item key={ADJOURN} icon={<FieldTimeOutlined/>}>
-                    Gia hạn
-                </Menu.Item>
-            </Menu>
+        <Row gutter={[24, 8]}>
+            <Col span={4}>
+                <SideMenu path={path} url={url}/>
             </Col>
-            <Col>
-                <BorrowingBook/>
+            <Col span={20}>
+                <Switch>
+                    <Route exact={false} path={path + BORROWING}>
+                        <BorrowingBooks/>
+                    </Route>
+                    <Route  exact={false} path={path + REGISTER_BORROW}>
+                        <RegisterBorrow/>
+                    </Route>
+                    <Route exact={false} path={path + ADJOURN}>
+                        <AdjournBooks/>
+                    </Route>    
+                    
+                </Switch>
             </Col>
         </Row>
             

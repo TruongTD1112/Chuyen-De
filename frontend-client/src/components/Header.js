@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import {Link} from 'react-router-dom'
-import { Menu, PageHeader, Avatar } from 'antd';
+import { Menu, PageHeader, Avatar, Dropdown} from 'antd';
 import { UserOutlined } from '@ant-design/icons'
 import {connect} from 'react-redux'
-import {useHistory} from 'react-router-dom'
+import {useHistory, Link} from 'react-router-dom'
 
 import {
     selectHome, 
@@ -13,7 +12,18 @@ import {
     BOOK_MANAGEMENT,
     GUIDE
 } from '../redux/reducers/MenuReducer'
-
+const AvatarDropdownMenu = props => {
+    return (
+        <Menu>
+            <Menu.Item key="edit">
+                <Link to="/client/edit-profile">Chỉnh thông tin cá nhân</Link>
+            </Menu.Item>
+            <Menu.Item key="logout">
+                Thoát đăng nhập
+            </Menu.Item>
+        </Menu>
+    )
+}
 const Header = props => {
 
     const history  = useHistory()
@@ -35,15 +45,17 @@ const Header = props => {
             
             title="Logo"
             subTitle={<div>
-                <Menu mode="horizontal" onSelect={onSelectMenuItem} selectedKeys={[props.itemSelected]} >
-                    <Menu.Item key={HOME}><Link to="/client/home">Trang chủ</Link></Menu.Item>
-                    <Menu.Item   key={BOOK_MANAGEMENT}><Link to="/client/book-management">Quản lý</Link></Menu.Item>
-                    <Menu.Item   key={GUIDE}><Link to="/client/guide">Hướng dẫn</Link></Menu.Item>
+                <Menu mode="horizontal" onSelect={onSelectMenuItem} selectedKeys={[props.itemSelected]}  >
+                    <Menu.Item key={HOME}><Link to={HOME}>Trang chủ</Link></Menu.Item>
+                    <Menu.Item   key={BOOK_MANAGEMENT}><Link to={BOOK_MANAGEMENT}>Quản lý</Link></Menu.Item>
+                    <Menu.Item   key={GUIDE}><Link to={GUIDE}>Hướng dẫn</Link></Menu.Item>
                 </Menu>
             </div>}
 
             extra={[
-                <Avatar key="5" size={48} icon={<UserOutlined />} />
+                <Dropdown overlay={AvatarDropdownMenu} placement="bottomLeft">
+                    <Avatar key="5" size={48} icon={<UserOutlined />} />
+                </Dropdown>
             ]}
         ></PageHeader>
     )
@@ -52,8 +64,7 @@ const Header = props => {
 
 const mapStateToProps = state => {
     return {
-        itemSelected: state.headerMenu.itemSelected,
-        lastSelected: state.headerMenu.lastSelected
+        itemSelected: state.headerMenu.itemSelected
     }
 }
 
