@@ -19,4 +19,4 @@ const Admin = Schema({
         required: true
     }
 })
-module.exports = admin = mongoose.model('admin, adminSchema');
+module.exports = admin = mongoose.model('admin', adminSchema);

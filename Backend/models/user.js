@@ -1,4 +1,4 @@
-const { Int32 } = require('bson');
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -19,13 +19,9 @@ const User = Schema({
         type: String,
         required: true
     },
-    grade:{
-        type: Int32,
-        required: true
-    },
     class:{
         type: String,
         required: true
     }
 })
-module.exports = user = mongoose.model('user, userSchema');
+module.exports = user = mongoose.model('user', User);
