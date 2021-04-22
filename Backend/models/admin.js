@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Admin = Schema({
-    id: {
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
         type: String,
         required: true
     },
@@ -17,6 +21,11 @@ const Admin = Schema({
     birthday:{
         type: String,
         required: true
+    },
+    status:{
+        type: String,
+        enum: ['active', 'inactive', 'locked'],
+        required: true
     }
 })
-module.exports = admin = mongoose.model('admin', adminSchema);
+module.exports = admin = mongoose.model('admin', Admin);
