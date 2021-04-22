@@ -1,12 +1,7 @@
-const { Int32 } = require('bson');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const User = Schema({
-    id: {
-        type: String,
-        required: true
-    },
+const UserSchema = Schema({
     firstName:{
         type: String,
         required: true
@@ -19,13 +14,29 @@ const User = Schema({
         type: String,
         required: true
     },
-    grade:{
-        type: Int32,
+    className:{
+        type: String,
         required: true
     },
-    class:{
+    username:{
         type: String,
+        required: true
+    },
+    email:
+    {
+        type: String,
+        required: true
+    },
+    password:{
+        type: String,   
+        required: true
+    }
+    ,
+    role: {
+        type: String,
+        enum: ['user','admin'],
         required: true
     }
 })
-module.exports = user = mongoose.model('user, userSchema');
+
+module.exports = mongoose.model('User', UserSchema);
