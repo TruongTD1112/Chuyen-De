@@ -177,6 +177,8 @@ router.put('/changePassword/:email', async (req, res) => {
         found.exec(function (err, userResult) {
             if (err) return console.log(err);
             else {
+                console.log(userResult.password);
+                console.log(req.body.oldPassword);
                 if (userResult === null) {
                     res.status(400).json({message : `No user have the email = ${req.params.email}`});
                 } else {
@@ -195,7 +197,7 @@ router.put('/changePassword/:email', async (req, res) => {
                             else res.json(result);
                         })
                     }
-                }
+            }
             }
         })
     } catch (err) {
@@ -203,53 +205,6 @@ router.put('/changePassword/:email', async (req, res) => {
     }
 })
 
-// Api for delete a user have id
-router.delete('/deleteById/:id', async (req, res) => {
-    try {
-        var found = user.findOneAndDelete({'id' : req.params.id});
-        found.exec(function (err, users) {
-            if (err) return console.log(err);
-            else {
-                if (users === null) {
-                    res.status(400).json({message : `No member have the id = ${req.params.id}`});
-                } else {
-                    res.status(200).json({message : "Delete user successfully", users});
-                }
-            }
-        })
-    } catch (err) {
-        res.status(400).json({message : err.message});
-    }
-})
-
-// Api for delete a user have email
-/*
-Example for input: DELETE http://localhost:4000/apiUser/deleteByEmail/aloha.669124@sis.hust.edu.vn
-*/
-router.delete('/deleteByEmail/:email', async (req, res) => {
-    try {
-        var found = user.findOne({'email' : req.params.email});
-        // found.select('id firstName lastName password');
-        // found.limit(5);
-        // found.sort({firstName : -1});
-        found.exec(function (err, userResult) {
-            if (err) return console.log(err);
-            else {
-                if (userResult === null) {
-                    res.status(400).json({message : `No member have the email = ${req.params.email}`});
-                } else {
-                    userResult.status = "inactive";
-                    userResult.save(err => {
-                        if (err) res.status(400).json(err);
-                        else res.status(200).json({message : "Delete user successfully", userResult});
-                    });
-                }
-            }
-        })       
-    } catch (err) {
-        res.status(400).json({message : err.message});
-    }
-})
 
 // Export
 module.exports = router;
