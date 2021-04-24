@@ -16,7 +16,8 @@ const SearchBooks = props => {
         name: "Aquamancascsacascasc",
         publishTime: 2019,
         author: "James Wan",
-        category: "Van hoc"
+        category: "Van hoc",
+        isRegistered: false
     }
     return (
         <Fragment>
