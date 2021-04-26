@@ -31,6 +31,37 @@ router.post('/importBook', async (req,res) =>{
 
 })
 
+// api lấy sách trong thư viện có id được chỉ định
+router.get('/getBookInfor/:bookId', async (req, res) => {
+    try {
+        var found = book.findOne({'id' : req.params.bookId});
+        found.exec(function(err, bookResult) {
+            if (err) return console.log(err);
+            if (bookResult === null) {
+                res.status(400).json({message : `No book have the id = ${req.params.bookId}`});
+            } else {
+                res.json(bookResult);
+            }
+        })
+    } catch (err) {
+        res.status(400).json({message : err.message})
+    }
+})
+
+// api thêm sách vào mục yêu thích
+router.post('/addFavoriteBook/:bookId/:userId',async(req,res) => {
+    try{
+    	var update = user.updateOne({'id':req.params.userId},$push:{'favoriteBooks':req.params.bookId});
+	update.exec(function(err){
+		if(err) return console.log(err);
+		console.log('Book is added on your favorite');
+            }
+        })
+    } catch (err) {
+        res.status(400).json({message : err.message})
+    }
+})
+
 //Save one
 // router.post("/importMaterial", async (req, res) => {
 //     try {
