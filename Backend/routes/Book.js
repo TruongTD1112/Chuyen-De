@@ -2,6 +2,7 @@ const { CommandCursor } = require('mongodb');
 const mongoose = require('mongoose');
 const router = require('express').Router();
 const book = require('../models/book');
+const book_element = require('../models/book_element');
 
 // api lay toan bo danh sach sach co trong thu vien
 router.get('/getListAllBooks', async (req,res) => {
@@ -14,21 +15,47 @@ router.get('/getListAllBooks', async (req,res) => {
     }
 })
 
+//
+router.get('/getListAllBooksElement', async (req,res) => {
+    try{
+        const listAllBooks = await book_element.find().sort({createdAt : -1});
+        res.json(listAllBooks);
+    }
+    catch(err){
+        res.status(400).json({message : err.message});
+    }
+})
+
 // api nhap sach vao trong kho
 router.post('/importBook', async (req,res) =>{
     try{
-        console.log(req.body.title);
-        console.log(req.body.id);
-        const newBook = new book({
+        console.log(req);
+        let amount = req.body.amount
+        let list_book = []
+        for(let i = 1; i<= amount; i++){
+            let bookElement = await new book({
+                status: "free"
+            })
+            await bookElement.save(err => {console.log(err)});      
+            console.log(bookElement);
+            list_book.push(bookElement);
+        }
+        console.log(list_book);
+        // console.log(req.body.title);
+        // console.log(req.body.id);
+        let newBook =  new book({
             title : req.body.title,
-            id : req.body.id
+            id : req.body.id,
+            author: req.body.author,
+            genre: req.body.genre,
+            list_book: list_book,
+            amount: req.body.amount
         })
         newBook.save(err => {console.log(err)});
     }
     catch(err) {
         res.status(400).json({ message: err.message });
     }
-
 })
 
 //Save one

@@ -1,10 +1,17 @@
 GET http://localhost:4000/getListAllBooks 
 
 ### 
+GET http://localhost:4000/getListAllBooksElement
+
+###
+
 POST http://localhost:4000/importBook 
 Content-Type:application/json
 
 {
-    "title" : "triet hoc",
-    "id" : "2"
+    "title" : "tin hoc dai cuong",
+    "id" : "THDC",
+    "author": "Tran Dinh Truong",
+    "genre": "dai cuong",
+    "amount": "5"
 }
