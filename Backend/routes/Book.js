@@ -29,11 +29,10 @@ router.get('/getListAllBooksElement', async (req,res) => {
 // api nhap sach vao trong kho
 router.post('/importBook', async (req,res) =>{
     try{
-        console.log(req);
-        let amount = req.body.amount
-        let list_book = []
+        let amount = req.body.amount;
+        let list_book = [];
         for(let i = 1; i<= amount; i++){
-            let bookElement = await new book({
+            let bookElement =  new book_element({
                 status: "free"
             })
             await bookElement.save(err => {console.log(err)});      
@@ -48,10 +47,10 @@ router.post('/importBook', async (req,res) =>{
             id : req.body.id,
             author: req.body.author,
             genre: req.body.genre,
-            list_book: list_book,
+            listBook: list_book,
             amount: req.body.amount
         })
-        newBook.save(err => {console.log(err)});
+        await newBook.save(err => {console.log(err)});
     }
     catch(err) {
         res.status(400).json({ message: err.message });
