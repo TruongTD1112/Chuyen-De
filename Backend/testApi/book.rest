@@ -13,5 +13,26 @@ Content-Type:application/json
     "id" : "THDC",
     "author": "Tran Dinh Truong",
     "genre": "dai cuong",
-    "amount": "5"
+    "amount": "5",
+    "code" : "TMQ123"
 }
+
+###
+
+POST http://localhost:4000/exportBook
+Content-Type:application/json
+
+{
+    "code" : "TMQ123",
+    "listBookExport" : [
+        {
+            "id": "6087901d9bceb83368f18120"
+        },
+        {
+            "id": "6087901d9bceb83368f1811f"
+        }
+    ]
+}
+
+###
+

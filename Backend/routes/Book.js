@@ -33,7 +33,8 @@ router.post('/importBook', async (req,res) =>{
         let list_book = [];
         for(let i = 1; i<= amount; i++){
             let bookElement =  new book_element({
-                status: "free"
+                status: "free",
+                code: req.body.code
             })
             await bookElement.save(err => {console.log(err)});      
             console.log(bookElement);
@@ -48,15 +49,37 @@ router.post('/importBook', async (req,res) =>{
             author: req.body.author,
             genre: req.body.genre,
             listBook: list_book,
-            amount: req.body.amount
+            amount: req.body.amount,
+            code : req.body.code
         })
         await newBook.save(err => {console.log(err)});
     }
     catch(err) {
         res.status(400).json({ message: err.message });
     }
+    return res.json("đã nhập kho sách thành công!")
 })
 
+
+//api xuat sach tu trong kho ra
+router.post('/exportBook', async (req,res) => {
+    try{
+        var {code, listBookExport} = req.body;
+        if(listBookExport.length == 0) res.json("không có sách nào để xuất kho!");
+        else {
+            list = await book_element.find({"code" : code, "status": "free"});
+            for(let i = 0; i< listBookExport.length; i++){
+                book_element.findByIdAndRemove(listBookExport[i].id, function(err){
+                    console.log(err);
+                });
+            }
+        }
+    }
+    catch(err){
+        res.status(400).json({message: err.message});
+    }
+    res.json("xuat sach ra thanh cong!");
+})
 //Save one
 // router.post("/importMaterial", async (req, res) => {
 //     try {

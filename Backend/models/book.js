@@ -7,10 +7,10 @@ const bookSchema = Schema({
         type: String,
         required: true
     },
-    // id: {
-    //     type: String,
-    //     required: true
-    // },
+    code: {
+        type: String,
+        required: true
+    },
     genre: {
         type: String,
         required: true
