@@ -49,13 +49,75 @@ router.get('/getBookInfor/:bookId', async (req, res) => {
 })
 
 // api thêm sách vào mục yêu thích
-router.post('/addFavoriteBook/:bookId/:userId',async(req,res) => {
+router.post('/addFavoriteBook',async(req,res) => {
     try{
     	var update = user.updateOne({'id':req.params.userId},$push:{'favoriteBooks':req.params.bookId});
-	update.exec(function(err){
-		if(err) return console.log(err);
-		console.log('Book is added on your favorite');
-            }
+		update.exec(function(err){
+			if(err) return console.log(err);
+			console.log('Book is added on your favorite');
+        })
+    } catch (err) {
+        res.status(400).json({message : err.message})
+    }
+})
+
+// api lấy danh sách sách đã yêu thích
+router.get('/getFavoriteBooks/:userId/:page',async(req,res) => {
+	try{
+		var userId = req.params.userId;
+		var page = req.params.page;
+		var favBooks = user.findOne({'id':userId},{_id:0, favoriteBooks:1});
+		favBooks.exec(function(err, favoriteBooksResult){
+			if(err) return console.log(err);
+			if(favoriteBooksResult==null){
+				res.status(400).json({message : `No user have the id = ${req.params.userId}`});
+            } else {
+				var numOfBook = favoriteBooksResult.favoriteBooks.length;
+				if((page-1)*5 > numOfBook - 1){
+					console.log('page too big');
+				}
+				else{
+					var indexLastBook = page*5;
+					if(indexLastBook > numOfBook) indexLastBook = numOfBook;
+					var indexFirstBook = (page-1)*5;
+					var finalResult = 
+					{
+						favoriteBooks: favoriteBooksResult.favoriteBooks.slice(indexFirstBook,indexLastBook);
+					};
+					res.json(finalResult);
+				}
+			}
+        })
+    } catch (err) {
+        res.status(400).json({message : err.message})
+    }
+})
+
+// api đăng kí mượn sách
+router.post('/registerToBorrowBook', async(req,res) => {
+	try{
+		var userId = req.params.userId;
+		var bookId = req.params.bookId;
+    	var update = user.updateOne({'id':userId},$push:{'resiterBooks':bookId});
+		update.exec(function(err){
+			if(err) return console.log(err);
+			console.log('Book is resgitered');
+        })
+    } catch (err) {
+        res.status(400).json({message : err.message})
+    }
+})
+
+// api gia hạn sách
+router.post('/extendBook', async(req, res) => {
+	try{
+		var userId = req.params.userId;
+		var bookId = req.params.bookId;
+		var newExpireTime = req.params.newExpireTime;
+    	var update = user.updateOne({'id':userId},$set:{'borrowBooks':req.params.bookId});
+		update.exec(function(err){
+			if(err) return console.log(err);
+			console.log('Book is resgitered');
         })
     } catch (err) {
         res.status(400).json({message : err.message})
