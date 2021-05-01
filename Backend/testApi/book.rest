@@ -1,10 +1,15 @@
 GET http://localhost:4000/getListAllBooks 
 
 ### 
+GET http://localhost:4000/getListAllBooksElement
+
+###
+
 POST http://localhost:4000/importBook 
 Content-Type:application/json
 
 {
+<<<<<<< HEAD
     "title" : "triet hoc",
     "id" : "2"
 }
@@ -21,3 +26,32 @@ Content-Type:application/json
 
 ###
 GET http://localhost:4000/apiUser/getInformation/aloha.669124@sis.hust.edu.vn
+=======
+    "title" : "tin hoc dai cuong",
+    "id" : "THDC",
+    "author": "Tran Dinh Truong",
+    "genre": "dai cuong",
+    "amount": "5",
+    "code" : "TMQ123"
+}
+
+###
+
+POST http://localhost:4000/exportBook
+Content-Type:application/json
+
+{
+    "code" : "TMQ123",
+    "listBookExport" : [
+        {
+            "id": "6087901d9bceb83368f18120"
+        },
+        {
+            "id": "6087901d9bceb83368f1811f"
+        }
+    ]
+}
+
+###
+
+>>>>>>> 1986840cdd47591ff7920db9aa292ebfb84cc15d
