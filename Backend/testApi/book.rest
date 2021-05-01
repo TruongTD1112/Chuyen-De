@@ -8,3 +8,16 @@ Content-Type:application/json
     "title" : "triet hoc",
     "id" : "2"
 }
+
+###
+PUT http://localhost:4000/apiUser/changePassword/aloha.669124@sis.hust.edu.vn
+Content-Type:application/json
+
+{
+    "oldPassword" : "12345678",
+    "newPassword": "12345678",
+    "confirmNewPassword" : "12345678"
+}
+
+###
+GET http://localhost:4000/apiUser/getInformation/aloha.669124@sis.hust.edu.vn

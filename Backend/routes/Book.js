@@ -24,6 +24,7 @@ router.post('/importBook', async (req,res) =>{
             id : req.body.id
         })
         newBook.save(err => {console.log(err)});
+        res.json(newBook);
     }
     catch(err) {
         res.status(400).json({ message: err.message });
