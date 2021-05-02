@@ -1,20 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import PropTypes from "prop-types";
-import {
-  Button,
-  Input,
-  InputNumber,
-  Popconfirm,
-  Space,
-  Table,
-  Tag,
-  Modal,
-  Form,
-  Column,
-  Select,
-} from "antd";
-class table extends React.Component{
-const dataSource = [
+import React from 'react';
+import {Table} from 'antd';
+
+function ListBooks() {
+
+    const dataSource = [
     {
       key: '1',
       name: 'Mike',
@@ -29,7 +18,7 @@ const dataSource = [
     },
   ];
   
-  const columns = [
+    const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -45,7 +34,11 @@ const dataSource = [
       dataIndex: 'address',
       key: 'address',
     },
-  ];
-  
-<Table dataSource={dataSource} columns={columns} />;
+    ];
+    return (
+        <div>
+            <Table dataSource= {dataSource} columns={columns} />
+        </div>
+    )
 }
+export default ListBooks;
