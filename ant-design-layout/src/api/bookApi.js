@@ -1,29 +1,25 @@
-import axios from "axios";
-const axiosClient = require('./axiosClient');
+import axiosClient from './axiosClient'
+import { notification } from "antd";
 
 const bookApi = {
-    getListAllBooks = {
         getListAllBooks: async () => {
             try{
-                response = await axiosClient.get('/getListAllBooks');
+                var response = await axiosClient.get('/getListAllBooks');
                 return response;
             }
             catch(err){
                 throw err;
             }
-        }
-    },
-    getListAllBooksElement = {
-        getListAllBooks: async () => {
+        },
+        getListAllBooksElement: async () => {
             try{
-                response = await axiosClient.get('/getListAllBooksElement');
+                var response = await axiosClient.get('/getListAllBooksElement');
                 return response;
             }
             catch(err){
                 throw err;
             }
-        }
-    },
+        },
     importBook: async (data) => {
         try {
           const response = await axiosClient.post(`importBook`, data);
@@ -44,4 +40,4 @@ const bookApi = {
       },
 }
 
-module.exports = bookApi;
+export default bookApi;

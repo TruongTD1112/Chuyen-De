@@ -25,7 +25,6 @@ axiosClient.interceptors.response.use(
     },
     (error) => {
       debugger;
-      notifFailure(error);
       throw error;
     },
   );
