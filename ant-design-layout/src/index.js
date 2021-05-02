@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import ListBooks from './components/Book/listBook';
+import ListUsers from './components/User/listUser';
+import SignUpForm from './components/User/signUpForm';
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -73,9 +75,10 @@ class SiderDemo extends React.Component {
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>
-              <ListBooks/>
-
+              {/*<Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>*/}
+              {/*<ListBooks/>*/}
+              {/*<ListUsers/>*/}
+              <SignUpForm/>
             </Breadcrumb>
             {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
               Giao diện tại đây
