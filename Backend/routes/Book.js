@@ -52,12 +52,7 @@ router.post('/importBook', async (req,res) =>{
             amount: req.body.amount,
             code : req.body.code
         })
-<<<<<<< HEAD
-        newBook.save(err => {console.log(err)});
-        res.json(newBook);
-=======
         await newBook.save(err => {console.log(err)});
->>>>>>> 1986840cdd47591ff7920db9aa292ebfb84cc15d
     }
     catch(err) {
         res.status(400).json({ message: err.message });
