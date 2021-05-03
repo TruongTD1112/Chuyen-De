@@ -30,8 +30,7 @@ class SignUpForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const res = userApi.signUp(this.state);
-        console.log(res);
+        userApi.signUp(this.state);
     }
 
     render() {
