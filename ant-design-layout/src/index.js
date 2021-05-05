@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import ListBooks from './components/Book/listBook';
+import ImportBook from './components/Book/importBook';
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -74,7 +75,7 @@ class SiderDemo extends React.Component {
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
               <Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>
-              <ListBooks/>
+              <ImportBook/>
 
             </Breadcrumb>
             {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>

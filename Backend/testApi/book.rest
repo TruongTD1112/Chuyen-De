@@ -9,12 +9,11 @@ POST http://localhost:4000/importBook
 Content-Type:application/json
 
 {
-    "title" : "tin hoc dai cuong",
-    "id" : "THDC",
-    "author": "Tran Dinh Truong",
-    "genre": "dai cuong",
-    "amount": "5",
-    "code" : "TMQ123"
+    "title" : "Triết học",
+    "author": "Vũ Khắc Chinh",
+    "genre": "Đại cương",
+    "amount": "500",
+    "code" : "TRH"
 }
 
 ###

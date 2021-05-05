@@ -20,3 +20,6 @@ code {
 .site-layout .site-layout-background {
   background: #fff;
 }
+.ant-btn {
+  margin-right: 8px;
+}
