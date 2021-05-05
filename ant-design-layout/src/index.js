@@ -78,7 +78,8 @@ class SiderDemo extends React.Component {
               {/*<Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>*/}
               {/*<ListBooks/>*/}
               {/*<ListUsers/>*/}
-              <SignUpForm/>
+              {/*<SignUpForm/>*/}
+              <ListUsers/>
             </Breadcrumb>
             {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
               Giao diện tại đây

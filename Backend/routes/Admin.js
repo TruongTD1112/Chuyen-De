@@ -213,7 +213,7 @@ router.put('/unlockUserByEmail/:email', async (req, res) => {
                     userResult.status = "active";
                     userResult.save(err => {
                         if (err) res.status(400).json(err);
-                        else res.status(200).json({message : "Lock user successfully", userResult});
+                        else res.status(200).json({message : "Unlock user successfully", userResult});
                     });
                 }
             }
