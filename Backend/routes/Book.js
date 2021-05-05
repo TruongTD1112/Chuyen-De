@@ -51,7 +51,7 @@ router.get('/getBookInfor/:bookId', async (req, res) => {
 // api thêm sách vào mục yêu thích
 router.post('/addFavoriteBook',async(req,res) => {
     try{
-    	var update = user.updateOne({'id':req.params.userId},$push:{'favoriteBooks':req.params.bookId});
+    	var update = user.updateOne({'id':req.params.userId},{$push:{'favoriteBooks':req.params.bookId}});
 		update.exec(function(err){
 			if(err) return console.log(err);
 			console.log('Book is added on your favorite');
@@ -82,7 +82,7 @@ router.get('/getFavoriteBooks/:userId/:page',async(req,res) => {
 					var indexFirstBook = (page-1)*5;
 					var finalResult = 
 					{
-						favoriteBooks: favoriteBooksResult.favoriteBooks.slice(indexFirstBook,indexLastBook);
+						favoriteBooks: favoriteBooksResult.favoriteBooks.slice(indexFirstBook,indexLastBook)
 					};
 					res.json(finalResult);
 				}
@@ -98,7 +98,7 @@ router.post('/registerToBorrowBook', async(req,res) => {
 	try{
 		var userId = req.params.userId;
 		var bookId = req.params.bookId;
-    	var update = user.updateOne({'id':userId},$push:{'resiterBooks':bookId});
+    	var update = user.updateOne({'id':userId},{$push:{'resiterBooks':bookId}});
 		update.exec(function(err){
 			if(err) return console.log(err);
 			console.log('Book is resgitered');
@@ -114,7 +114,7 @@ router.post('/extendBook', async(req, res) => {
 		var userId = req.params.userId;
 		var bookId = req.params.bookId;
 		var newExpireTime = req.params.newExpireTime;
-    	var update = user.updateOne({'id':userId},$set:{'borrowBooks':req.params.bookId});
+    	var update = user.updateOne({'id':userId},{$set:{'borrowBooks':req.params.bookId}});
 		update.exec(function(err){
 			if(err) return console.log(err);
 			console.log('Book is resgitered');
