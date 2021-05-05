@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const router = require('express').Router();
 const book = require('../models/book');
 const book_element = require('../models/book_element');
+const user = require('../models/user');
 
 // api lay toan bo danh sach sach co trong thu vien
 router.get('/getListAllBooks', async (req,res) => {
@@ -60,11 +61,10 @@ router.post('/importBook', async (req,res) =>{
     return res.json("đã nhập kho sách thành công!")
 })
 
-<<<<<<< HEAD
 // api lấy sách trong thư viện có id được chỉ định
 router.get('/getBookInfor/:bookId', async (req, res) => {
     try {
-        var found = book.findOne({'id' : req.params.bookId});
+        var found = book.findById(req.params.bookId);
         found.exec(function(err, bookResult) {
             if (err) return console.log(err);
             if (bookResult === null) {
@@ -81,11 +81,13 @@ router.get('/getBookInfor/:bookId', async (req, res) => {
 // api thêm sách vào mục yêu thích
 router.post('/addFavoriteBook',async(req,res) => {
     try{
-    	var update = user.updateOne({'id':req.params.userId},{$push:{'favoriteBooks':req.params.bookId}});
+        
+    	var update = user.findByIdAndUpdate(req.body.userId,{$addToSet:{'favoriteBooks':req.body.bookId.trim()}});
 		update.exec(function(err){
 			if(err) return console.log(err);
-			console.log('Book is added on your favorite');
+			res.json('Book is added on your favorite');
         })
+        
     } catch (err) {
         res.status(400).json({message : err.message})
     }
@@ -96,9 +98,11 @@ router.get('/getFavoriteBooks/:userId/:page',async(req,res) => {
 	try{
 		var userId = req.params.userId;
 		var page = req.params.page;
-		var favBooks = user.findOne({'id':userId},{_id:0, favoriteBooks:1});
+		var favBooks = user.findById(userId,{_id:0, favoriteBooks:1});
+        
 		favBooks.exec(function(err, favoriteBooksResult){
 			if(err) return console.log(err);
+
 			if(favoriteBooksResult==null){
 				res.status(400).json({message : `No user have the id = ${req.params.userId}`});
             } else {
@@ -110,11 +114,19 @@ router.get('/getFavoriteBooks/:userId/:page',async(req,res) => {
 					var indexLastBook = page*5;
 					if(indexLastBook > numOfBook) indexLastBook = numOfBook;
 					var indexFirstBook = (page-1)*5;
-					var finalResult = 
-					{
-						favoriteBooks: favoriteBooksResult.favoriteBooks.slice(indexFirstBook,indexLastBook)
-					};
-					res.json(finalResult);
+
+                    let favoriteBooks = favoriteBooksResult.favoriteBooks.slice(indexFirstBook,indexLastBook);
+                    let getFavoriteBookInfoPromise = favoriteBooks.map((id, index)=> {
+                        return book.findById(id, {listBook: 0} )
+                    })
+                    Promise.all(getFavoriteBookInfoPromise)
+                    .then(result => {
+                        res.json(result);
+                    })
+                    .catch(err => {
+                        res.status(400).json({message : err.message})
+                    })
+					
 				}
 			}
         })
@@ -126,12 +138,14 @@ router.get('/getFavoriteBooks/:userId/:page',async(req,res) => {
 // api đăng kí mượn sách
 router.post('/registerToBorrowBook', async(req,res) => {
 	try{
-		var userId = req.params.userId;
-		var bookId = req.params.bookId;
-    	var update = user.updateOne({'id':userId},{$push:{'resiterBooks':bookId}});
+		var userId = req.body.userId;
+		var bookId = req.body.bookId;
+
+    	var update = user.updateOne({_id: userId},{$addToSet:{'registerBooks':bookId}});
 		update.exec(function(err){
 			if(err) return console.log(err);
 			console.log('Book is resgitered');
+            res.status(200).json({message: "success"})
         })
     } catch (err) {
         res.status(400).json({message : err.message})
@@ -154,28 +168,6 @@ router.post('/extendBook', async(req, res) => {
     }
 })
 
-=======
-
-//api xuat sach tu trong kho ra
-router.post('/exportBook', async (req,res) => {
-    try{
-        var {code, listBookExport} = req.body;
-        if(listBookExport.length == 0) res.json("không có sách nào để xuất kho!");
-        else {
-            list = await book_element.find({"code" : code, "status": "free"});
-            for(let i = 0; i< listBookExport.length; i++){
-                book_element.findByIdAndRemove(listBookExport[i].id, function(err){
-                    console.log(err);
-                });
-            }
-        }
-    }
-    catch(err){
-        res.status(400).json({message: err.message});
-    }
-    res.json("xuat sach ra thanh cong!");
-})
->>>>>>> master
 //Save one
 // router.post("/importMaterial", async (req, res) => {
 //     try {

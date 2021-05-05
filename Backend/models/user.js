@@ -37,7 +37,7 @@ const User = Schema({
 		type: [String],
 		required: false
 	},
-	resiterBooks:{
+	registerBooks:{
 		type: [String],
 		required: false
 	},
