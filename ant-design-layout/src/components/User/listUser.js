@@ -85,20 +85,28 @@ function ListUsers(props) {
         await getData()
     }, []);
 
-    const lockUser = (record) => {
-        adminApi.lockUser(record.email);
-        const new_data = data.slice();
-        new_data[record.index - 1].status = 'locked';
-        new_data[record.index - 1].action =  <Button shape="retangle" type="primary" block="true" onClick={() => unlockUser(new_data[record.index - 1])}>Mở khóa tài khoản</Button>;
-        setData(new_data);
+    const lockUser = async(record) => {
+        try {
+            await adminApi.lockUser(record.email);
+            const new_data = data.slice();
+            new_data[record.index - 1].status = 'locked';
+            new_data[record.index - 1].action =  <Button shape="retangle" type="primary" block="true" onClick={() => unlockUser(new_data[record.index - 1])}>Mở khóa tài khoản</Button>;
+            setData(new_data);
+        } catch (err) {
+            console.log(err.message);
+        }      
     }
 
-    const unlockUser = (record) => {
-        adminApi.unlockUser(record.email);
-        const new_data = data.slice();
-        new_data[record.index - 1].status = 'active';
-        new_data[record.index - 1].action =  <Button shape="retangle" type="danger" block="true" onClick={() => lockUser(new_data[record.index - 1])}>Khóa tài khoản</Button>;
-        setData(new_data);
+    const unlockUser = async(record) => {
+        try {
+            await adminApi.unlockUser(record.email);
+            const new_data = data.slice();
+            new_data[record.index - 1].status = 'active';
+            new_data[record.index - 1].action =  <Button shape="retangle" type="danger" block="true" onClick={() => lockUser(new_data[record.index - 1])}>Khóa tài khoản</Button>;
+            setData(new_data);
+        } catch (err) {
+            console.log(err.message);
+        }
     };
 
     return(

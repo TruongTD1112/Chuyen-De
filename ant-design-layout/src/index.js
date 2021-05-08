@@ -5,6 +5,7 @@ import { Layout, Menu, Breadcrumb } from 'antd';
 import ListBooks from './components/Book/listBook';
 import ListUsers from './components/User/listUser';
 import SignUpForm from './components/User/signUpForm';
+import SignUp from './components/User/signUp'
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -79,6 +80,7 @@ class SiderDemo extends React.Component {
               {/*<ListBooks/>*/}
               {/*<ListUsers/>*/}
               {/*<SignUpForm/>*/}
+              {/*<SignUp/>*/}
               <ListUsers/>
             </Breadcrumb>
             {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>

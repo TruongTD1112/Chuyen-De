@@ -16,6 +16,7 @@ class SignUpForm extends React.Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleReset = this.handleReset.bind(this);
     }
 
     handleInputChange(event) {
@@ -31,6 +32,18 @@ class SignUpForm extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         userApi.signUp(this.state);
+    }
+
+    handleReset(event) {
+        this.setState({
+            email : '',
+            password : '',
+            confirmPassword : '',
+            firstName : '',
+            lastName : '',
+            birthday : '',
+            class : '',
+        })
     }
 
     render() {
@@ -105,7 +118,12 @@ class SignUpForm extends React.Component {
                     </div>
                     <br></br>
                     <div class="row">
-                        <button type="submit" class="btn btn-primary my-1 center-block">Submit</button>
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-primary my-1 pull-right">Submit</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button type="reset" class="btn btn-danger my-1 pull-left" onClick={this.handleReset}>Reset</button>
+                        </div>
                     </div>
                 </form>
             </div>
