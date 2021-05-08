@@ -111,4 +111,14 @@ router.post('/exportBook', async (req,res) => {
 //       res.status(400).json({ message: err.message });
 //     }
 //   });
+
+router.post('/getByListID', async (req, res) => {
+    //const records = await Model.find({ '_id': { $in: ids } });
+    const list_id = req.body.list_id;
+    const data = await book_element.find({ '_id': { $in: list_id } });
+    res.json(data);
+}
+);
+
+
 module.exports = router;
