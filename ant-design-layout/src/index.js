@@ -38,6 +38,7 @@ const { SubMenu } = Menu;
 class SiderDemo extends React.Component {
   state = {
     collapsed: false,
+    display: "",
   };
 
   onCollapse = collapsed => {
@@ -59,6 +60,8 @@ class SiderDemo extends React.Component {
               Dashboard
             </Menu.Item>
             <SubMenu key="sub1" icon={<UserOutlined />} title="User">
+              <Menu.Item key="createNewUser" onClick={() => {this.setState({display : "createNewUser"})}}>Đăng ký người dùng</Menu.Item>
+              <Menu.Item key="lock/unlockUser" onClick={() => {this.setState({display : "lock/unlockUser"})}}>Khóa/Mở khóa người dùng</Menu.Item>
               {/* <Menu.Item key="3">Tom</Menu.Item>
               <Menu.Item key="4">Bill</Menu.Item>
               <Menu.Item key="5">Alex</Menu.Item> * */}
@@ -78,10 +81,9 @@ class SiderDemo extends React.Component {
             <Breadcrumb style={{ margin: '16px 0' }}>
               {/*<Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>*/}
               {/*<ListBooks/>*/}
-              {/*<ListUsers/>*/}
               {/*<SignUpForm/>*/}
-              {/*<SignUp/>*/}
-              <ListUsers/>
+              {this.state.display === "createNewUser" ? <SignUp/>: ""}
+              {this.state.display === "lock/unlockUser" ? <ListUsers/>: ""}
             </Breadcrumb>
             {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
               Giao diện tại đây
