@@ -4,14 +4,12 @@ import { Form, Input, Button, Checkbox, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {login} from '../../api/Login_Logout'
 const Login = (props) => {
-    const onFinish = (values) => {
-        console.log('Received values of form: ', values);
-    };
+
     const history = useHistory()
-    const log  = async (values)=> {
-        // const res = await login(values.username, values.password)
-        // console.log(res)
-        history.push('/client/home')
+    const signin  = async (values)=> {
+        const res = await login(values.email, values.password)
+        console.log(res)
+        
     }
 
     return (
@@ -23,13 +21,13 @@ const Login = (props) => {
             initialValues={{
                 remember: true,
             }}
-            onFinish={log}
+            onFinish={signin}
             style={{width:300}}
             
         >
             <h2 style={{textAlign:'center'}}>Đăng nhập</h2>
             <Form.Item
-                name="username"
+                name="email"
                 rules={[
                     {
                         required: true,

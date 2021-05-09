@@ -64,6 +64,7 @@ Example for input: POST http://localhost:4000/apiUser/login
 */
 router.post('/login', async (req, res) => {
     try {
+        console.log(req.body)
         var found = user.findOne({'email' : req.body.email, 'status' : 'active'});
         found.exec(function(err, userResult) {
             if (err) return console.log(err);
@@ -93,6 +94,7 @@ Example for input: POST http://localhost:4000/apiUser/createNewUser
 */
 router.post('/createNewUser', async (req, res) => {
     try {
+
         var found = user.findOne({'email' : req.body.email});
         found.exec(function(err, userResult) {
             if (err) return console.log(err);
@@ -105,6 +107,7 @@ router.post('/createNewUser', async (req, res) => {
                 } else if (Object.keys(req.body.password).length < 8){
                     res.status(400).json({message : "Password is too short. Please equal or more than 8 characters."});
                 } else {
+                    console.log(req.body)
                     const newUser = new user({
                         email : req.body.email,
                         password : req.body.password,
