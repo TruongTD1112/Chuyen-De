@@ -17,7 +17,6 @@ const baseRequest = async (method, path, payload) => {
             data: payload,
             timeout: 5000,
             timeoutErrorMessage: 'Fail',
-            xsrfCookieName: 'sess',
             cancelToken: source.token,
             headers: {
                 "Content-Type": "application/json"

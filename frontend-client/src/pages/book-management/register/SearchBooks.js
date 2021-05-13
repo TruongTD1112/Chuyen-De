@@ -58,10 +58,7 @@ const SearchBooks = props => {
                     </Col>
                 </Row>
             </Card>
-            <Book bookInfo={searchResultEx}/>
-            <Book bookInfo={searchResultEx}/>
-            <Book bookInfo={searchResultEx}/>
-            <Book bookInfo={searchResultEx}/>
+
             <Layout>
                 <Footer style={{backgroundColor:"#fff"}}>
                 <Pagination defaultCurrent={1} total={25} defaultPageSize={5} pageSize={5} onChange={onChangePage} style={{textAlign:'center'}}/>

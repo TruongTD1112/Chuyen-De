@@ -3,13 +3,19 @@ import {Link, useHistory} from 'react-router-dom'
 import { Form, Input, Button, Checkbox, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {login} from '../../api/Login_Logout'
+import {useSelector, useDispatch} from 'react-redux'
+import {setData, SET_DATA} from '../../redux/reducers/UserDataReducer'
 const Login = (props) => {
-
+    const dispatch = useDispatch();
     const history = useHistory()
     const signin  = async (values)=> {
         const res = await login(values.email, values.password)
-        console.log(res)
-        
+        if (res.status === 200){
+            dispatch(setData(res.data))
+            document.cookie = `Name=${res.data.firstName}`;
+            document.cookie = `u_id=${res.data._id}`;
+            history.push('/client/home');
+        }
     }
 
     return (

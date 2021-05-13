@@ -10,10 +10,10 @@ import {
     FieldTimeOutlined
 } from '@ant-design/icons'
 import {
-    ADJOURN,
+    EXTEND,
     BORROWING,
     REGISTER_BORROW,
-    selectAdjourn,
+    selectExtend,
     selectBorrowing,
     selectRegisterBorrow
 } from '../../redux/reducers/BookManagementMenuReducer'
@@ -24,7 +24,7 @@ const SideMenu = props => {
     const onSelect = ({key})=> {
         if (key === BORROWING) props.selectBorrowing()
         if (key === REGISTER_BORROW) props.selectRegisterBorrow()
-        if (key === ADJOURN) props.selectAdjourn()
+        if (key === EXTEND) props.selectExtend()
     }
     const {url} = props
     useEffect(()=> {
@@ -38,8 +38,8 @@ const SideMenu = props => {
                 <Menu.Item key={REGISTER_BORROW} icon={<PicLeftOutlined/>}>
                     <Link to={url + REGISTER_BORROW}>Đăng ký mượn sách</Link>
                 </Menu.Item>
-                <Menu.Item key={ADJOURN} icon={<FieldTimeOutlined/>}>
-                    <Link to={url + ADJOURN}>Gia hạn</Link>
+                <Menu.Item key={EXTEND} icon={<FieldTimeOutlined/>}>
+                    <Link to={url + EXTEND}>Gia hạn</Link>
                 </Menu.Item>
         </Menu>
     )
@@ -52,7 +52,7 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => {
     return {
-        selectAdjourn: ()=>dispatch(selectAdjourn()),
+        selectExtend: ()=>dispatch(selectExtend()),
         selectBorrowing: ()=> dispatch(selectBorrowing()),
         selectRegisterBorrow: ()=> dispatch(selectRegisterBorrow())
     }

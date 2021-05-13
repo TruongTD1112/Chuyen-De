@@ -1,9 +1,9 @@
-export const ADJOURN = '/adjourn-book'
+export const EXTEND = '/extend-book'
 export const BORROWING = '/borrowing'
 export const REGISTER_BORROW = '/register-borrow'
 
 //action
-export const selectAdjourn = ()=> ({type: ADJOURN})
+export const selectExtend = ()=> ({type: EXTEND})
 export const selectBorrowing =  ()=>({type: BORROWING})
 export const selectRegisterBorrow = ()=> ({type: REGISTER_BORROW})
 
@@ -19,8 +19,8 @@ export default function selectBookManagerMenuItemReducer (state = INIT_STATE, ac
         case REGISTER_BORROW: 
             return {...state, itemSelected: REGISTER_BORROW}
 
-        case ADJOURN: 
-            return {...state, itemSelected: ADJOURN}
+        case EXTEND: 
+            return {...state, itemSelected: EXTEND}
         
         default:
             return state

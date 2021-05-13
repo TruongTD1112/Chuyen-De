@@ -35,7 +35,8 @@ const User = Schema({
     ,
 	favoriteBooks:{
 		type: [String],
-		required: false
+		required: false,
+        
 	},
 	registerBooks:{
 		type: [String],
@@ -45,9 +46,10 @@ const User = Schema({
 		type: [
 		{
             bookId: String,
-            expireTime: Date
+            expireTime: Date,            
 		}
 		],
+        ref: 'book_element',
 		required: false,
 	}
 })

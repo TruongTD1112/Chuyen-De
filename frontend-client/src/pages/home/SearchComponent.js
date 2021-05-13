@@ -1,24 +1,42 @@
 import React, {useState} from 'react'
-import { Input, Space, Card, Row, Col, Select, Pagination } from 'antd';
+import { Input, Space, Card, Row, Col, Select, Pagination, Button } from 'antd';
 import BookComponent from './BookComponent'
 import './SearchComponent.css'
+import {searchBook} from '../../api/BookManagement'
 const { Search } = Input
 const { Option } = Select
 
 const SearchComponent = props => {
-    const [page, setPage] = useState(0);
-    const onSearch = (value) => {
-        console.log(value)
+    const [page, setPage] = useState(1);
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [genre, setGenre] = useState('');
+    const [code, setCode] = useState('');
+    const [searchRes, setSearchRes] = useState([]);
+    const onSearch = async () => {
+        try {
+            let res = await searchBook(title, genre, author, page, code);
+            if (res.status === 200) {
+                setSearchRes(res.data)
+            }
+        }
+        catch(error){
+            alert("Có lỗi khi tìm kiếm")
+        }
     }
-    const onChangePage = p => {
-        setPage(p)
+    const onChangePage = async p => {
+        setPage(p);
+        try {
+            let res = await searchBook(title, genre, author, p, code);
+            if (res.status === 200) {
+                setSearchRes(res.data)
+            }
+        }
+        catch(error){
+            alert("Có lỗi khi tìm kiếm")
+        }
     }
-    const searchResultEx = {
-        img: 'https://statics.pancake.vn/web-media/e9/c6/b4/f3/8cb610dafded1452dcfc8792450e2926faef8389b1ed8cc8d767c3b5.jpg',
-        name: "Aquamancascsacascasc",
-        publishTime: 2019,
-        author: "James Wan"
-    }
+
     
     const onClickSearch = () => {
         window.scrollTo({ top: 500, left: 0, behavior: 'smooth' })
@@ -28,47 +46,37 @@ const SearchComponent = props => {
             <Card title="Tìm kiếm"  bordered={false}>
                 
                 <Row justify="start" gutter={4}>
-                    <Col span={12}>
-                    <Search onClick={onClickSearch} placeholder="Tên sách...    " onSearch={onSearch} enterButton style={{borderWidth: 2}} />
+                    <Col span={8}>
+                    <Input onClick={onClickSearch} placeholder="Tên sách...    " onPressEnter={onSearch}  style={{borderWidth: 2}} onChange={e => setTitle(e.target.value)} />
                     </Col>
                     <Col span={4} >
-                        <Select placeholder="Năm xuất bản" style={{width:'100%'}}>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                        </Select>
-                    </Col>
+                        <Input placeholder="Mã sách" onPressEnter={onSearch} onChange={e => setCode(e.target.value)}/>
+                        </Col>  
                     <Col span={4}>
-                        <Select placeholder="Tác giả" style={{width:'100%'}} >
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                        </Select>
+                        <Input placeholder="Tác giả" onPressEnter={onSearch} onChange={e => setAuthor(e.target.value)}/>
                     </Col>
+                    
 
                     <Col span={4} >
-                        <Select placeholder="Thể loại" style={{width:'100%'}}>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
-                            <Option value="2019">2019</Option>
+                        <Select labelInValue  placeholder="Thể loại" style={{width:'100%'}} onChange={e => {setGenre(e.value)}}>
+                            <Option value="">Tất cả</Option>
+                            <Option value="văn học">Văn học</Option>
+                            <Option value="tin học">Tin học</Option>
+                            <Option value="toán học">Toán học</Option>
+                            <Option value="lịch sử">Lịch sử</Option>
+                            <Option value="chính trị">Chính trị</Option>
+                            <Option value="dai cuong">Đại Cương</Option>
                         </Select>
 
                     </Col>
+                    <Button type="primary" onClick={onSearch}>Tìm kiếm</Button>
                 </Row>
             </Card>
             <Row justify="start" gutter={{ xs: 8, sm: 16, md: 24 }}>
-                
-                    <BookComponent  bookInfo={searchResultEx} />
-               
-                    <BookComponent bookInfo={searchResultEx} />
-                
-                    <BookComponent bookInfo={searchResultEx} />               
+                { searchRes.length >0 &&  searchRes.map((elem, index) => (
+                    <BookComponent bookInfo={elem} key={index} />
+                ))}
+                            
 
             </Row>
             

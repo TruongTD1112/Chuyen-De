@@ -4,7 +4,7 @@ const router = require('express').Router();
 const book = require('../models/book');
 const book_element = require('../models/book_element');
 const user = require('../models/user');
-
+const BOOK_PER_PAGE = 5;
 // api lay toan bo danh sach sach co trong thu vien
 router.get('/getListAllBooks', async (req,res) => {
     try{
@@ -62,16 +62,16 @@ router.post('/importBook', async (req,res) =>{
 })
 
 // api lấy sách trong thư viện có id được chỉ định
-router.get('/getBookInfor/:bookId', async (req, res) => {
+router.get('/getBookInfor', async (req, res) => {
     try {
-        var found = book.findById(req.params.bookId);
-        found.exec(function(err, bookResult) {
-            if (err) return console.log(err);
-            if (bookResult === null) {
-                res.status(400).json({message : `No book have the id = ${req.params.bookId}`});
-            } else {
-                res.json(bookResult);
-            }
+        let {bookId} = req.query;
+        book_element.findById(bookId).populate('rootBook', {'listBook':0, 'amount':0})
+        .then(result => {
+            if (result == null) return res.status(200).send('notfound')
+            else return res.status(200).send(result)
+        })
+        .catch(err => {
+            return res.status(400).json({message: err})
         })
     } catch (err) {
         res.status(400).json({message : err.message})
@@ -82,33 +82,40 @@ router.get('/getBookInfor/:bookId', async (req, res) => {
 router.post('/addFavoriteBook',async(req,res) => {
     try{
         
-    	var update = user.findByIdAndUpdate(req.body.userId,{$addToSet:{'favoriteBooks':req.body.bookId.trim()}});
+    	var update = user.findByIdAndUpdate(req.body.userId, {$addToSet:{'favoriteBooks':req.body.bookId.trim()}});
 		update.exec(function(err){
-			if(err) return console.log(err);
-			res.json('Book is added on your favorite');
+			if(err) return res.status(400).json({message: "Có lỗi khi thực thi"})
+			return res.status(200).json({message: "Đã thêm sách vào mục yêu thích"})
         })
         
     } catch (err) {
-        res.status(400).json({message : err.message})
+        return res.status(400).json({message : err.message})
     }
 })
 
 // api lấy danh sách sách đã yêu thích
-router.get('/getFavoriteBooks/:userId/:page',async(req,res) => {
+router.get('/getFavoriteBooks',async(req,res) => {
 	try{
-		var userId = req.params.userId;
-		var page = req.params.page;
+        let pageRe = /\D/;
+		let  userId = req.query.userId;
+		let page = req.query.page;
+
+        if (page == undefined || pageRe.test(page) || parseInt(page)<=0){
+            page = 1;
+        }
+        page = parseInt(page)
 		var favBooks = user.findById(userId,{_id:0, favoriteBooks:1});
         
 		favBooks.exec(function(err, favoriteBooksResult){
-			if(err) return console.log(err);
+			if(err) return res.status(400).json({message: err});
 
-			if(favoriteBooksResult==null){
-				res.status(400).json({message : `No user have the id = ${req.params.userId}`});
+			if(favoriteBooksResult == null){
+				res.status(400).json({message : `No user have the id = ${userId}`});
             } else {
+
 				var numOfBook = favoriteBooksResult.favoriteBooks.length;
 				if((page-1)*5 > numOfBook - 1){
-					console.log('page too big');
+					return res.status(400).json({message: "Có lỗi xảy ra"});
 				}
 				else{
 					var indexLastBook = page*5;
@@ -117,10 +124,11 @@ router.get('/getFavoriteBooks/:userId/:page',async(req,res) => {
 
                     let favoriteBooks = favoriteBooksResult.favoriteBooks.slice(indexFirstBook,indexLastBook);
                     let getFavoriteBookInfoPromise = favoriteBooks.map((id, index)=> {
-                        return book.findById(id, {listBook: 0} )
+                        return book.findById(id, {listBook:0})
                     })
                     Promise.all(getFavoriteBookInfoPromise)
                     .then(result => {
+                        console.log(result)
                         res.json(result);
                     })
                     .catch(err => {
@@ -168,6 +176,96 @@ router.post('/extendBook', async(req, res) => {
     }
 })
 
+router.get('/borrowingBooks', async(req, res) => {
+    let {userId, page} = req.query;
+
+    if (page == undefined || pageRe.test(page) || parseInt(page)<=0){
+        page = 1;
+    }
+    page = parseInt(page)
+
+    if (page < 0) return res.status(400).json({message: "Khong tim thay"});
+    let userFound = await user.findById(userId)
+
+    let listBorrowId = userFound.borrowBooks;
+    if ((page - 1) * BOOK_PER_PAGE > listBorrowId.length){
+        return res.status(400).json({message: "Khong tim thay"});
+    }
+    let listBookIdNeed = listBorrowId.slice((page - 1)*BOOK_PER_PAGE, Math.min(page*BOOK_PER_PAGE, listBorrowId.length));
+    let getListRootBookPromise = listBookIdNeed.map((elem, index) => {
+        return book_element.findById(elem.bookId).populate('rootBook',{listBook:0});
+    })
+    try{
+        let result = await Promise.all(getListRootBookPromise);
+        return res.status(200).json(result);
+    }catch(err){
+        return res.status(400).json({message: err.message});
+    }
+
+
+})
+
+router.get('/searchBook', async(req, res) => {
+    let {code, title, author, genre, page} = req.query;
+    let pageRe = /\D/;
+    if (page == undefined || pageRe.test(page) || parseInt(page)<=0){
+        page = 1;
+    }
+    page = parseInt(page)
+
+    if (code === undefined || code ===""){
+        let altTitle = ""
+        let titleReg = new RegExp(altTitle.trim(), 'u');
+        if (title !== undefined) titleReg = new RegExp(title.trim(), 'u');
+
+        let altAuthor = ""
+        let authorReg = new RegExp(altAuthor.trim(), 'u');
+        if (author !== undefined) authorReg = new RegExp(author.trim(), 'u');
+
+        let altGenre = ""
+        let genreReg = new RegExp(altGenre.trim(), 'u');
+        if (genre !== undefined) genreReg = new RegExp(genre.trim(), 'u');
+        book.find({
+            title: {$regex : titleReg},
+            author: {$regex: authorReg},
+            genre: {$regex: genreReg}
+        },{listBook:0})        
+        .skip((page-1) * BOOK_PER_PAGE)
+        .limit(BOOK_PER_PAGE)        
+        .then(result => {
+            return res.status(200).json(result);
+        })
+        .catch(err => {
+            return res.status(400).json(err);
+        })
+    }
+    else{
+        book.findOne({code: code})
+        .then(result => {
+            return res.status(200).json(result)
+        })
+        .catch(err => {
+            return res.status(400).json(err)
+        })
+    }
+    
+    
+    
+})
+
+router.get('/getAllRegisteredBookId', async (req, res) => {
+    let userId = req.query.userId;
+    try{
+        let listId = await user.findById(userId)
+        let registerBooksId = listId.registerBooks;
+        if (registerBooksId === null){
+            return res.status(400).json({message: null})
+        }
+        return res.status(200).json(registerBooksId);
+    }catch (err){
+        return res.status(400).json({message: err})
+    }
+})
 //Save one
 // router.post("/importMaterial", async (req, res) => {
 //     try {

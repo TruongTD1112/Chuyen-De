@@ -13,7 +13,7 @@ const Home = props => {
 
 
     return (
-        <Fragment>
+     
             <BaseLayout>
                 <Content style={{ padding: '0 50px' }}>
 
@@ -24,7 +24,7 @@ const Home = props => {
                     </div>
                 </Content>
             </BaseLayout>
-        </Fragment>
+
     )
 }
 

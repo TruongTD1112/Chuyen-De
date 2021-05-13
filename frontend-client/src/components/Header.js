@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Menu, PageHeader, Avatar, Dropdown} from 'antd';
+import { Menu, PageHeader, Avatar, Dropdown, Button} from 'antd';
 import { UserOutlined } from '@ant-design/icons'
-import {connect} from 'react-redux'
+import {connect, useDispatch} from 'react-redux'
 import {useHistory, Link} from 'react-router-dom'
 
 import {
@@ -12,6 +12,8 @@ import {
     BOOK_MANAGEMENT,
     GUIDE
 } from '../redux/reducers/MenuReducer'
+import { setData } from '../redux/reducers/UserDataReducer';
+import {getCookieByName} from '../utils/cookieHandler'
 const AvatarDropdownMenu = props => {
     return (
         <Menu>
@@ -25,7 +27,7 @@ const AvatarDropdownMenu = props => {
     )
 }
 const Header = props => {
-
+    
     const history  = useHistory()
     const onSelectMenuItem = ({key})=>{
         if (key === HOME ) props.selectHome()
@@ -34,6 +36,12 @@ const Header = props => {
     }
 
     useEffect(()=> {
+        if (props.userData._id == ""){
+            let temp = props.userData;
+            temp._id = getCookieByName('u_id');
+            temp.firstName = getCookieByName('Name');
+            props.setUserData(temp)
+        }
         if (history.location.pathname.includes(HOME)) props.selectHome()
         if (history.location.pathname.includes(BOOK_MANAGEMENT)) props.selectBookManagement()
         if (history.location.pathname.includes(GUIDE)) props.selectGuide()
@@ -53,26 +61,29 @@ const Header = props => {
             </div>}
 
             extra={[
-                <Dropdown overlay={AvatarDropdownMenu} placement="bottomLeft">
-                    <Avatar key="5" size={48} icon={<UserOutlined />} />
+                <label key="1" style={{fontWeight:'bold'}} >{props.userData.firstName == "" ? getCookieByName('Name'): props.userData.firstName}</label>,
+                <Dropdown key="2" overlay={AvatarDropdownMenu} placement="bottomLeft">
+                    <Avatar key="5" style={{ backgroundColor: '#87d068' }} size={40} icon={<UserOutlined  />} />
                 </Dropdown>
             ]}
         ></PageHeader>
     )
 }
 
-
+//map state store in redux to props
 const mapStateToProps = state => {
     return {
-        itemSelected: state.headerMenu.itemSelected
+        itemSelected: state.headerMenu.itemSelected,
+        userData: state.userDataReducer.userData
     }
 }
-
+//map action to props
 const mapDispatchToProps = dispatch => {
     return {
         selectHome: ()=> dispatch(selectHome()),
         selectBookManagement: ()=> dispatch(selectBookManagement()),
-        selectGuide: ()=> dispatch(selectGuide())
+        selectGuide: ()=> dispatch(selectGuide()),
+        setUserData: (data)=> dispatch(setData(data))
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

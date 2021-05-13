@@ -1,6 +1,6 @@
 import {BrowserRouter as Router,Switch} from "react-router-dom"
 import PrivateRoute from '../src/components/auth/PrivateRoute'
-import PublicRoute from '../src/components/auth/PrivateRoute'
+import PublicRoute from '../src/components/auth/PublicRoute'
 import Index from '../src/pages/index'
 import Home from '../src/pages/home'
 import Login from '../src/pages/login'
