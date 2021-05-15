@@ -3,15 +3,11 @@ export const REMOVE_FROM_REGISTERED = "remove_register"
 export const SET = 'set_registered'
 //action
 export const addToRegistered = (payload) => {
-    let setBooks = new Set(INIT_STATE.registeredBooks);
-    let updatedSet = setBooks.add(payload);
-    return {type: ADD__TO_REGISTERED, payload: new Array(updatedSet)}
+    // let setBooks = new Set(INIT_STATE.registeredBooks);
+    // let updatedSet = setBooks.add(payload);
+    return {type: ADD__TO_REGISTERED, payload: payload}
 }
-export const removeFromRegistered = (payload) => {
-    let setBooks = new Set(INIT_STATE.registeredBooks);
-    let updatedSet = setBooks.delete(payload)
-    return {type: ADD__TO_REGISTERED, payload: new Array(updatedSet)}
-}
+
 export const setRegisteredBooks = (payload) => ({
     type: SET,
     payload: payload
@@ -24,7 +20,7 @@ const INIT_STATE = {
 export default function RegisteredBookReducer (state = INIT_STATE, action) {
     switch (action.type) {
         case ADD__TO_REGISTERED: {
-            return { ...state, registeredBooks: action.payload }
+            return { ...state, registeredBooks: [...state.registeredBooks, action.payload] }
         }
         case REMOVE_FROM_REGISTERED: {
             return { ...state, registeredBooks: action.payload }

@@ -81,7 +81,7 @@ const SearchComponent = props => {
             </Row>
             
             <div style={{display:'flex', flexDirection:'row', justifyContent:'center'}} >
-                <Pagination current={page} onChange={onChangePage} total={20} />
+                <Pagination current={page} onChange={onChangePage} total={50} />
             </div>
             
 

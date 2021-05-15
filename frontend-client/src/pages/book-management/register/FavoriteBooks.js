@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react'
 import {Pagination, Layout, Spin} from 'antd'
 import {LoadingOutlined} from '@ant-design/icons'
 import Book from './Book'
-import {getFavoriteBook} from '../../../api/BookManagement'
+import {getFavoriteBook, registerBorrow, unregisterBorrow} from '../../../api/BookManagement'
 import {openErrorNotificaton, openSuccessNotification, openWarningNotification} from '../../../utils/notification'
 const {Footer} = Layout
 const loadIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
@@ -17,6 +17,7 @@ const FavoriteBooks = props => {
             let res = await getFavoriteBook(props.userData._id, p)
             if (res.status === 200){
                 setListBooks(res.data);
+                console.log(res.data)
                 setIsLoading(false);
             }
             else {
@@ -28,7 +29,7 @@ const FavoriteBooks = props => {
             setIsLoading(false);
         }
     }
-    
+
     const onChange = (page)=> {
         getFavBooks(page);
     }
@@ -41,7 +42,13 @@ const FavoriteBooks = props => {
             <br/>
             <div style={{width:'100%',    textAlign:'center'}}>
                 {listBooks.length > 0 && listBooks.map((elem, index) => (
-                    <Book bookInfo = {elem} key={index} />
+                    <Book 
+                    userId={props.userData._id} 
+                    bookInfo = {elem} key={index} 
+                    index={index}  
+                    registeredBooks={props.registeredBooks}
+                    addToRegistered={props.addToRegistered}
+                    setRegisteredBooks = {props.setRegisteredBooks}   />
                 ))}
                 <br/>
                 {isLoading && loadIcon}

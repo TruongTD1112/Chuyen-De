@@ -21,11 +21,16 @@ export const addBookToFavorite = (userId, bookId) => post('/addFavoriteBook', {
     bookId: bookId
 })
 export const getFavoriteBook = (userId, page) => get(`/getFavoriteBooks?userId=${userId}&page=${page}`)
-export const registerBorrow = (userId, bookId) => post('/registerToBorrowBook', {
+export const registerBorrow = (userId, bookId, code) => post('/registerToBorrowBook', {
     userId: userId,
-    bookId: bookId
+    bookId: bookId,
+    code: code
 })
-
+export const unregisterBorrow = (userId, bookId, bookElementId) => post('/unregisterToBorrowBook', {
+    userId: userId,
+    bookId: bookId,
+    bookElementId: bookElementId
+})
 export const extendBook = (userId, bookId, newExpireTime) => post ('/extendBook', {
     userId: userId,
     bookId: bookId,
@@ -33,3 +38,4 @@ export const extendBook = (userId, bookId, newExpireTime) => post ('/extendBook'
 })
 
 export const getRegisteredBooks = (userId) => get (`/getAllRegisteredBookId?userId=${userId}`)
+export const getListBooksInfor = (listBookId) => get (`/getListBookInfor?listId=${JSON.stringify(listBookId)}`)

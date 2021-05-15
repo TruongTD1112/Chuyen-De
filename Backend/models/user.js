@@ -39,9 +39,13 @@ const User = Schema({
         
 	},
 	registerBooks:{
-		type: [String],
+		type: [{
+            bookId: String,
+            bookElementId: String
+        }],
 		required: false
 	},
+    
 	borrowBooks:{
 		type: [
 		{
