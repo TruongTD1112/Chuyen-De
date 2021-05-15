@@ -17,7 +17,7 @@ const FavoriteBooks = props => {
             let res = await getFavoriteBook(props.userData._id, p)
             if (res.status === 200){
                 setListBooks(res.data);
-                console.log(res.data)
+
                 setIsLoading(false);
             }
             else {
@@ -50,10 +50,11 @@ const FavoriteBooks = props => {
                     addToRegistered={props.addToRegistered}
                     setRegisteredBooks = {props.setRegisteredBooks}   />
                 ))}
+                
                 <br/>
                 {isLoading && loadIcon}
             </div>
-            
+            {listBooks.message!==undefined &&listBooks.message==="Không có sách" && <div style={{textAlign: 'center', width:'100%'}}>Danh sách trống</div>} 
             {/* <div style={{width:'100%', textAlign:'center'}}> */}
             <Layout>
                 <Footer style={{backgroundColor:"#fff"}}>

@@ -49,7 +49,7 @@ const Book = props => {
         }
     }
     useEffect(()=> {
-        console.log(title, _id, registeredBooks.some(book => book.bookId === _id))
+
         setIsRegistered(registeredBooks.some(book => book.bookId === _id))
 
     },[_id])

@@ -16,7 +16,7 @@ const RegisterBook = props => {
             if (res.status === 200) {
 
                 props.setRegisteredBooks(res.data)
-                console.log(res.data)
+
             }
             else {
                 openErrorNotificaton("Có lỗi khi tải trang")

@@ -115,7 +115,7 @@ router.get('/getFavoriteBooks', async (req, res) => {
 
                 var numOfBook = favoriteBooksResult.favoriteBooks.length;
                 if ((page - 1) * 5 > numOfBook - 1) {
-                    return res.status(400).json({ message: "Có lỗi xảy ra" });
+                    return res.status(200).json({ message: "Không có sách" });
                 }
                 else {
                     var indexLastBook = page * 5;
@@ -129,7 +129,7 @@ router.get('/getFavoriteBooks', async (req, res) => {
                     Promise.all(getFavoriteBookInfoPromise)
                         .then(result => {
 
-                            res.json(result);
+                            res.status(200).json(result);
                         })
                         .catch(err => {
                             res.status(400).json({ message: err.message })
@@ -149,11 +149,10 @@ router.post('/registerToBorrowBook', async (req, res) => {
         let userId = req.body.userId;
         let code = req.body.code;
         let bookId = req.body.bookId
-        console.log(bookId, code, userId)
+
         let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free' }, { status: 'pending' }, { new: true })
-        console.log(freeBook)
         if (freeBook !== null) {
-            console.log(freeBook)
+
             await user.findByIdAndUpdate(userId, { $addToSet: { 'registerBooks': { bookId: bookId, bookElementId: freeBook._id } } }, { new: true })
             return res.status(200).json({ registerBook: { bookId: bookId, bookElementId: freeBook._id } });
         } else {
@@ -167,14 +166,14 @@ router.post('/registerToBorrowBook', async (req, res) => {
 // hủy đăng ký mượn sách
 router.post('/unregisterToBorrowBook', async (req, res) => {
     let { userId, bookId, bookElementId } = req.body;
-    console.log(req.body)
+
     try {
         let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': { bookId: bookId, bookElementId: bookElementId } } }, { new: true })
 
         let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
         return res.status(200).json(userfound)
     } catch (error) {
-        console.log(error)
+
         res.status(400).json({ message: error.message })
     }
 })
