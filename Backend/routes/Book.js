@@ -186,7 +186,7 @@ router.post('/extendBook', async (req, res) => {
         var update = user.updateOne({ 'id': userId }, { $set: { 'borrowBooks': req.params.bookId } });
         update.exec(function (err) {
             if (err) return console.log(err);
-            console.log('Book is resgitered');
+            console.log('Book is extended');
         })
     } catch (err) {
         res.status(400).json({ message: err.message })
