@@ -13,7 +13,9 @@ const PORT=4000
 //const book = require('./models/book');
 mongoose.connect(DATABASE_URL, {
 	useUnifiedTopology: true,
-	useNewUrlParser: true
+	useNewUrlParser: true,
+	useFindAndModify: false,
+	
 });
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));

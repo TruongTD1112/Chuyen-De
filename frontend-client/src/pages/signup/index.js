@@ -9,7 +9,7 @@ const SignUp = props => {
         console.log('Received values of form: ', values);
     };
     const log  = async (values)=> {
-        const res = await singup(values.username, values.password, values.fullName, values.email)
+        const res = await singup(values.password, values.fullName, values.email, values.birthday, values.class)
         console.log(res)
     }
     return (
@@ -49,6 +49,17 @@ const SignUp = props => {
                 <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Email" type="email" />
             </Form.Item>
             <Form.Item
+                name="birthday"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Nhập ngày sinh!',
+                    },
+                ]}
+            >
+                <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Ngày sinh" type="date" />
+            </Form.Item>
+            <Form.Item
                 name="password"
                 rules={[
                     {
@@ -76,6 +87,21 @@ const SignUp = props => {
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     type="password"
                     placeholder="Xác nhận mật khẩu"
+                />
+            </Form.Item>
+            <Form.Item
+                name="class"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Nhập tên lớp!',
+                    },
+                ]}
+            >
+                <Input
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    
+                    placeholder="Tên lớp"
                 />
             </Form.Item>
             <Form.Item>

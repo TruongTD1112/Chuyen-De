@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from 'react'
 import {Row, Col, Pagination} from 'antd' 
 import {useHistory, useLocation} from 'react-router-dom'
-import AdjournBookComponent from './AdjournBookComponent'
+import ExtendBookComponent from './ExtendBookComponent'
 
 const useQuery = ()=> {
     return new URLSearchParams(useLocation().search)
@@ -71,7 +71,7 @@ const AdjournBook = props => {
 
         </Row>
             {bookInfo.map((info, index)=>(
-                <AdjournBookComponent key={index} index={index} bookInfo={info}/>
+                <ExtendBookComponent key={index} index={index} bookInfo={info}/>
             ))}
         </div>
         

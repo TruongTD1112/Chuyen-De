@@ -7,12 +7,16 @@ const book_elementSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        enum : ['rent', 'free'],
+        enum : ['rent', 'free', 'pending'],
         required : true
     }, 
     code: {
         type: String,
         required: true
+    },
+    rootBook: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'book'
     }
 
 })

@@ -34,6 +34,8 @@ Content-Type:application/json
 }
 
 ###
+GET http://localhost:4000/borrowingBooks/6096d4a9e8439a1bc0165a28/1
+Content-Type:application/json
 
 POST http://localhost:4000/getByListID
 Content-Type:application/json
@@ -41,3 +43,8 @@ Content-Type:application/json
 {
     "list_id": ["6087901d9bceb83368f1811d", "6087901d9bceb83368f1811c"]
 }
+###
+GET http://localhost:4000/getBookInfor/6086e3ed260fe01114f2431d
+Content-Type:application/json
+###
+GET http://localhost:4000/searchBook?&author=Kiên&page=0&title=

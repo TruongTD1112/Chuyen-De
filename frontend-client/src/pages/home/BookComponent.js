@@ -4,7 +4,7 @@ import {ReadOutlined } from '@ant-design/icons'
 import BookDetailComponent from './BookDetailComponent'
 const { Meta } = Card
 const BookComponent = props => {
-    const { name, img, author, publishTime } = props.bookInfo
+    const { title, author, genre, code , _id} = props.bookInfo
     const [detailVisible, setDetailVisible] = useState(false)
     const onCloseDetail = ()=>{
         setDetailVisible(false)
@@ -17,23 +17,25 @@ const BookComponent = props => {
                 cover={
                     <img
                         alt="Image"
-                        src={img}
+                        src={'https://statics.pancake.vn/web-media/e9/c6/b4/f3/8cb610dafded1452dcfc8792450e2926faef8389b1ed8cc8d767c3b5.jpg'}
                     />
                 }
             >
                 <Meta
-                    title={name}
-                    description={author + ' - ' + publishTime}
+                    title={title}
+                    description={code + ' - ' + author + ' - ' + genre}
                 />
 
             </Card>
             <BookDetailComponent
                 author={author}
-                name={name}
-                publishTime={publishTime}
+                name={title}
+                code={code}
+                genre={genre}
                 detailVisible={detailVisible}
                 onCloseDetail={onCloseDetail}
-                img={img}
+                _id = {_id}
+                img={"https://statics.pancake.vn/web-media/e9/c6/b4/f3/8cb610dafded1452dcfc8792450e2926faef8389b1ed8cc8d767c3b5.jpg"}
             />
         </Col>
     )

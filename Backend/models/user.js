@@ -32,5 +32,30 @@ const User = Schema({
         enum: ['active', 'inactive', 'locked'],
         required: true
     }
+    ,
+	favoriteBooks:{
+		type: [String],
+		required: false,
+        
+	},
+	registerBooks:{
+		type: [{
+            bookId: String,
+            bookElementId: String
+        }],
+		required: false
+	},
+    
+	borrowBooks:{
+		type: [
+		{
+            bookId: String,
+            expireTime: Date,            
+		}
+		],
+        ref: 'book_element',
+		required: false,
+	}
 })
+
 module.exports = user = mongoose.model('user', User);
