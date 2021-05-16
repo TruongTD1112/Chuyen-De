@@ -4,8 +4,10 @@ import './index.css';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import ListBooks from './components/Book/listBook';
 import ListUsers from './components/User/listUser';
-import SignUpForm from './components/User/signUpForm';
-import SignUp from './components/User/signUp'
+import SignUp from './components/User/signUp';
+import SignUpForAdmin from './components/Admin/signUpForAdmin';
+import ChangeInformationAdmin from './components/Admin/changeInformationAdmin';
+import BorrowBooks from './components/User/borrowBooks';
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -59,9 +61,14 @@ class SiderDemo extends React.Component {
             <Menu.Item key="2" icon={<DesktopOutlined />}>
               Dashboard
             </Menu.Item>
+            <SubMenu key="admin" icon={<UserOutlined />} title="Admin">
+              <Menu.Item key="createNewAdmin" onClick={() => {this.setState({display : "createNewAdmin"})}}>Đăng ký quản lý</Menu.Item>
+              <Menu.Item key="changeInformationAdmin" onClick={() => {this.setState({display : "changeInformationAdmin"})}}>Thay đổi thông tin cá nhân</Menu.Item>
+            </SubMenu>
             <SubMenu key="sub1" icon={<UserOutlined />} title="User">
               <Menu.Item key="createNewUser" onClick={() => {this.setState({display : "createNewUser"})}}>Đăng ký người dùng</Menu.Item>
               <Menu.Item key="lock/unlockUser" onClick={() => {this.setState({display : "lock/unlockUser"})}}>Khóa/Mở khóa người dùng</Menu.Item>
+              <Menu.Item key="borrowBooks" onClick={() => {this.setState({display : "borrowBooks"})}}>Đăng ký mượn sách</Menu.Item>
               {/* <Menu.Item key="3">Tom</Menu.Item>
               <Menu.Item key="4">Bill</Menu.Item>
               <Menu.Item key="5">Alex</Menu.Item> * */}
@@ -80,10 +87,11 @@ class SiderDemo extends React.Component {
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
               {/*<Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>*/}
-              {/*<ListBooks/>*/}
-              {/*<SignUpForm/>*/}
+              {this.state.display === "createNewAdmin" ? <SignUpForAdmin/>: ""}
+              {this.state.display === "changeInformationAdmin" ? <ChangeInformationAdmin/>: ""}
               {this.state.display === "createNewUser" ? <SignUp/>: ""}
               {this.state.display === "lock/unlockUser" ? <ListUsers/>: ""}
+              {this.state.display === "borrowBooks" ? <BorrowBooks/>: ""}
             </Breadcrumb>
             {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
               Giao diện tại đây
