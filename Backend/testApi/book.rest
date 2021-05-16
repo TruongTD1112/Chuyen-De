@@ -9,11 +9,32 @@ POST http://localhost:4000/importBook
 Content-Type:application/json
 
 {
+
     "title" : "Triết học",
     "author": "Vũ Khắc Chinh",
     "genre": "Đại cương",
     "amount": "500",
     "code" : "TRH"
+}
+
+###
+PUT http://localhost:4000/apiUser/changePassword/aloha.669124@sis.hust.edu.vn
+Content-Type:application/json
+
+{
+    "oldPassword" : "12345678",
+    "newPassword": "12345678",
+    "confirmNewPassword" : "12345678"
+}
+
+###
+GET http://localhost:4000/apiUser/getInformation/aloha.669124@sis.hust.edu.vn
+    "title" : "tin hoc dai cuong",
+    "id" : "THDC",
+    "author": "Tran Dinh Truong",
+    "genre": "dai cuong",
+    "amount": "5",
+    "code" : "TMQ123"
 }
 
 ###
@@ -47,4 +68,5 @@ Content-Type:application/json
 GET http://localhost:4000/getBookInfor/6086e3ed260fe01114f2431d
 Content-Type:application/json
 ###
-GET http://localhost:4000/searchBook?&author=Kiên&page=0&title=
+GET http://localhost:4000/searchBook?&author=Kiên&page=0&title=1986840cdd47591ff7920db9aa292ebfb84cc15d
+

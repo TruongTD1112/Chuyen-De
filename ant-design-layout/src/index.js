@@ -5,6 +5,9 @@ import { Layout, Menu, Breadcrumb } from 'antd';
 import ListBooks from './components/Book/listBook';
 import ImportBook from './components/Book/importBook';
 import ExportBook from './components/Book/exportBook';
+import ListUsers from './components/User/listUser';
+import SignUpForm from './components/User/signUpForm';
+import SignUp from './components/User/signUp'
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -37,6 +40,7 @@ const { SubMenu } = Menu;
 class SiderDemo extends React.Component {
   state = {
     collapsed: false,
+    display: "",
   };
 
   onCollapse = collapsed => {
@@ -58,6 +62,8 @@ class SiderDemo extends React.Component {
               Dashboard
             </Menu.Item>
             <SubMenu key="sub1" icon={<UserOutlined />} title="User">
+              <Menu.Item key="createNewUser" onClick={() => {this.setState({display : "createNewUser"})}}>Đăng ký người dùng</Menu.Item>
+              <Menu.Item key="lock/unlockUser" onClick={() => {this.setState({display : "lock/unlockUser"})}}>Khóa/Mở khóa người dùng</Menu.Item>
               {/* <Menu.Item key="3">Tom</Menu.Item>
               <Menu.Item key="4">Bill</Menu.Item>
               <Menu.Item key="5">Alex</Menu.Item> * */}
@@ -78,6 +84,11 @@ class SiderDemo extends React.Component {
               <Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>
               <ExportBook/>
 
+              {/*<Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>*/}
+              {/*<ListBooks/>*/}
+              {/*<SignUpForm/>*/}
+              {this.state.display === "createNewUser" ? <SignUp/>: ""}
+              {this.state.display === "lock/unlockUser" ? <ListUsers/>: ""}
             </Breadcrumb>
             {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
               Giao diện tại đây
