@@ -61,6 +61,26 @@ router.post('/importBook', async (req, res) => {
     return res.json("đã nhập kho sách thành công!")
 })
 
+
+//api xuat sach tu trong kho ra
+router.post('/exportBook', async (req,res) => {
+    try{
+        var {code, bookId} = req.body;
+        await book_element.findByIdAndRemove(bookId, function(err){
+            console.log(err);
+        });
+        await book.update({$pull: {
+            listBook: bookId
+        }})
+    }
+    catch(err){
+        res.status(400).json({message: err.message});
+    }
+
+    res.json("xuat sach ra thanh cong!");
+})
+
+
 // api lấy thông tin sách trong thư viện có id được chỉ định
 router.get('/getBookInfor', async (req, res) => {
     try {

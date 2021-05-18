@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import 'antd/dist/antd.css';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import ListBooks from './components/Book/listBook';
 import ImportBook from './components/Book/importBook';
