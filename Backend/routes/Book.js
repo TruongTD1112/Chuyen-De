@@ -163,18 +163,52 @@ router.get('/getFavoriteBooks', async (req, res) => {
     }
 })
 
+// // api đăng kí mượn sách
+// router.post('/registerToBorrowBook', async (req, res) => {
+//     try {
+//         let userId = req.body.userId;
+//         let code = req.body.code;
+
+//         let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free' }, { status: 'pending' }, { new: true })
+//         if (freeBook !== null) {
+
+//             await user.findByIdAndUpdate(userId, { $addToSet: { 'registerBooks': { code: code, bookElementId: freeBook._id } } }, { new: true })
+//             return res.status(200).json({ registerBook: { code: code, bookElementId: freeBook._id } });
+//         } else {
+//             return res.status(200).json({ message: "Hết sách" })
+//         }
+//     } catch (err) {
+//         res.status(400).json({ message: err.message })
+//     }
+// })
+
+// // hủy đăng ký mượn sách
+// router.post('/unregisterToBorrowBook', async (req, res) => {
+//     let { userId, code, bookElementId } = req.body;
+
+//     try {
+//         let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': {code: code, bookElementId: bookElementId } } }, { new: true })
+
+//         let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
+//         return res.status(200).json(userfound)
+//     } catch (error) {
+
+//         res.status(400).json({ message: error.message })
+//     }
+// })
+
 // api đăng kí mượn sách
 router.post('/registerToBorrowBook', async (req, res) => {
     try {
         let userId = req.body.userId;
         let code = req.body.code;
-        let bookId = req.body.bookId;
-
-        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free' }, { status: 'pending' }, { new: true })
+        let bookElementId = req.body.bookElementId;
+        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free', _id: bookElementId }, { status: 'pending' }, { new: true })
+        console.log(freeBook);
         if (freeBook !== null) {
 
-            await user.findByIdAndUpdate(userId, { $addToSet: { 'registerBooks': { bookId: bookId, bookElementId: freeBook._id } } }, { new: true })
-            return res.status(200).json({ registerBook: { bookId: bookId, bookElementId: freeBook._id } });
+            await user.findByIdAndUpdate(userId, { $addToSet: { 'registerBooks': { code: code, bookElementId: freeBook._id } } }, { new: true })
+            return res.status(200).json({ registerBook: { code: code, bookElementId: freeBook._id } });
         } else {
             return res.status(200).json({ message: "Hết sách" })
         }
@@ -183,21 +217,37 @@ router.post('/registerToBorrowBook', async (req, res) => {
     }
 })
 
+// hủy đăng ký mượn sách
+router.post('/unregisterToBorrowBook', async (req, res) => {
+    let { userId, code, bookElementId } = req.body;
+
+    try {
+        let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': {code: code, bookElementId: bookElementId } } }, { new: true })
+
+        let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
+        return res.status(200).json(userfound)
+    } catch (error) {
+
+        res.status(400).json({ message: error.message })
+    }
+})
+
+// xu ly request muon sach
 router.post('/handleBookRequest', async (req, res) => {
     try{
-        let {id, userId} = req.body; 
-        await book_element.findOneAndUpdate({ _id: id, status: 'pending' }, { status: 'rent' });
+        let {bookId, userId, code} = req.body; 
+        await book_element.findOneAndUpdate({ _id: bookId, status: 'pending' }, { status: 'rent' });
         await user.findByIdAndUpdate(userId, {$pull: {
             registerBooks: {bookElementId : id}
         }})
-        await user.findByIdAndUpdate(userId, { $addToSet: { 'borrowBooks': { bookId: bookId, bookElementId: freeBook._id } } }
-
+        await user.findByIdAndUpdate(userId, { $addToSet: { 'borrowBooks': { code: code, bookElementId: bookId } } });
     }  
     catch(err){
       res.status(400).json({message: err.message});  
     }
 })
 
+// huy
 router.post('/getAvailableBook', async (req, res) => {
     try {
         let code = req.body.code;
