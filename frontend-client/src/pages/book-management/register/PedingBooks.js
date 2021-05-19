@@ -15,14 +15,14 @@ const PendingBooks = props => {
         
         try {
             setIsLoading(true)
-            let bookIds = props.registeredBooks.map((elem, index) => elem.bookId)
+            let codes = props.registeredBooks.map((elem, index) => elem.code)
 
-            if ((page - 1) * 5 > bookIds.length) {
+            if ((page - 1) * 5 > codes.length) {
                 setIsLoading(false)
                 return;
             }
-            bookIds = bookIds.slice((page - 1) * 5, Math.min(bookIds.length, page * 5))
-            let res = await getListBooksInfor(bookIds)
+            codes = codes.slice((page - 1) * 5, Math.min(codes.length, page * 5))
+            let res = await getListBooksInfor(codes)
             if (res.status === 200) {
                 setListBooks(res.data)
                 setIsLoading(false)

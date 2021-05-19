@@ -40,7 +40,7 @@ const User = Schema({
 	},
 	registerBooks:{
 		type: [{
-            bookId: String,
+            code: String,
             bookElementId: String
         }],
 		required: false

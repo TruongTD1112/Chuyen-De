@@ -148,13 +148,12 @@ router.post('/registerToBorrowBook', async (req, res) => {
     try {
         let userId = req.body.userId;
         let code = req.body.code;
-        let bookId = req.body.bookId
 
         let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free' }, { status: 'pending' }, { new: true })
         if (freeBook !== null) {
 
-            await user.findByIdAndUpdate(userId, { $addToSet: { 'registerBooks': { bookId: bookId, bookElementId: freeBook._id } } }, { new: true })
-            return res.status(200).json({ registerBook: { bookId: bookId, bookElementId: freeBook._id } });
+            await user.findByIdAndUpdate(userId, { $addToSet: { 'registerBooks': { code: code, bookElementId: freeBook._id } } }, { new: true })
+            return res.status(200).json({ registerBook: { code: code, bookElementId: freeBook._id } });
         } else {
             return res.status(200).json({ message: "Hết sách" })
         }
@@ -165,10 +164,10 @@ router.post('/registerToBorrowBook', async (req, res) => {
 
 // hủy đăng ký mượn sách
 router.post('/unregisterToBorrowBook', async (req, res) => {
-    let { userId, bookId, bookElementId } = req.body;
+    let { userId, code, bookElementId } = req.body;
 
     try {
-        let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': { bookId: bookId, bookElementId: bookElementId } } }, { new: true })
+        let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': {code: code, bookElementId: bookElementId } } }, { new: true })
 
         let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
         return res.status(200).json(userfound)
@@ -288,12 +287,12 @@ router.get('/getAllRegisteredBookId', async (req, res) => {
 router.get('/getListBookInfor', async (req, res) => {
 
     try {
-        let listId = req.query.listId;
+        let codes = req.query.codes;
 
-        listId = JSON.parse(listId)
+        codes = JSON.parse(codes)
 
-        let getInfoPromise = listId.map((elem, index) => {
-            return book.findById(elem, { listBook: 0 })
+        let getInfoPromise = codes.map((elem, index) => {
+            return book.findOne({code: elem}, { listBook: 0 })
         })
         Promise.all(getInfoPromise)
             .then(result => {
