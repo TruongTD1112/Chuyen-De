@@ -168,7 +168,7 @@ router.post('/registerToBorrowBook', async (req, res) => {
     try {
         let userId = req.body.userId;
         let code = req.body.code;
-        let bookId = req.body.bookId
+        let bookId = req.body.bookId;
 
         let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free' }, { status: 'pending' }, { new: true })
         if (freeBook !== null) {
@@ -182,6 +182,34 @@ router.post('/registerToBorrowBook', async (req, res) => {
         res.status(400).json({ message: err.message })
     }
 })
+
+router.post('/handleBookRequest', async (req, res) => {
+    try{
+        let {id, userId} = req.body; 
+        await book_element.findOneAndUpdate({ _id: id, status: 'pending' }, { status: 'rent' });
+        await user.findByIdAndUpdate(userId, {$pull: {
+            registerBooks: {bookElementId : id}
+        }})
+        await user.findByIdAndUpdate(userId, { $addToSet: { 'borrowBooks': { bookId: bookId, bookElementId: freeBook._id } } }
+
+    }  
+    catch(err){
+      res.status(400).json({message: err.message});  
+    }
+})
+
+router.post('/getAvailableBook', async (req, res) => {
+    try {
+        let code = req.body.code;
+        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free' }, { status: 'pending' }, { new: true })
+        res.status(200).json(freeBook);
+    }
+    catch(err){
+        console.log(err);
+    }
+    }
+)
+
 
 // hủy đăng ký mượn sách
 router.post('/unregisterToBorrowBook', async (req, res) => {

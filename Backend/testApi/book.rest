@@ -70,3 +70,10 @@ Content-Type:application/json
 ###
 GET http://localhost:4000/searchBook?&author=Kiên&page=0&title=1986840cdd47591ff7920db9aa292ebfb84cc15d
 
+###
+POST http://localhost:4000/getAvailableBook
+Content-Type:application/json
+
+{
+    "code" : "VH"
+}
