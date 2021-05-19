@@ -77,3 +77,25 @@ Content-Type:application/json
 {
     "code" : "VH"
 }
+
+###
+POST http://localhost:4000/handleBookRequest
+Content-Type:application/json
+
+{
+    "bookElementId" : "608e5a410ec4fa1b784803ed",
+    "userId" :"60a4af2a2186d82c045122a8",
+    "code" : "VH"
+}
+
+###
+POST http://localhost:4000/registerToBorrowBook
+Content-Type:application/json
+
+{
+    "bookElementId" : "608e5a410ec4fa1b784803ed",
+    "userId" :"60a4af2a2186d82c045122a8",
+    "code" : "VH"
+}
+
+

@@ -15,13 +15,16 @@ POST http://localhost:4000/apiUser/createNewUser
 Content-Type:application/json
 
 {
-    "email": "ngaikien@xxx.com",
+    "email": "ngaikien9999@xxx.com",
     "password": "12345678",
     "confirmPassword" : "12345678",
     "firstName": "TV",
     "lastName": "Kiên",
     "birthday": "10-01-2008",
-    "class": "CNTT-xx"
+    "class": "CNTT-xx",
+    "registerBooks" : [{}],
+    "borrowBooks" : [{}]
+
 }
 
 ###

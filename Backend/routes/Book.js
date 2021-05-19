@@ -222,10 +222,14 @@ router.post('/unregisterToBorrowBook', async (req, res) => {
     let { userId, code, bookElementId } = req.body;
 
     try {
-        let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': {code: code, bookElementId: bookElementId } } }, { new: true })
+        let book = await book_element.findOne({_id: bookElementId});
+        if(book.status != "pending") res.json("sách đang không ở trạng thái pending");
+        else{
+            let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': {code: code, bookElementId: bookElementId } } }, { new: true })
 
-        let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
-        return res.status(200).json(userfound)
+            let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
+            return res.status(200).json(userfound)
+        }
     } catch (error) {
 
         res.status(400).json({ message: error.message })
@@ -235,46 +239,20 @@ router.post('/unregisterToBorrowBook', async (req, res) => {
 // xu ly request muon sach
 router.post('/handleBookRequest', async (req, res) => {
     try{
-        let {bookId, userId, code} = req.body; 
-        await book_element.findOneAndUpdate({ _id: bookId, status: 'pending' }, { status: 'rent' });
-        await user.findByIdAndUpdate(userId, {$pull: {
-            registerBooks: {bookElementId : id}
-        }})
-        await user.findByIdAndUpdate(userId, { $addToSet: { 'borrowBooks': { code: code, bookElementId: bookId } } });
+        let {bookElementId, userId, code} = req.body; 
+
+        await book_element.findOneAndUpdate({ _id: bookElementId, status: 'pending' }, { status: 'rent', user: userId });
+        await user.findOneAndUpdate({_id: userId}, {$pull: {registerBooks: {bookElementId : bookElementId, code : code}}})
+        await user.findByIdAndUpdate(userId, { $addToSet: { 'borrowBooks': { code: code, bookElementId: bookElementId } } });
     }  
     catch(err){
       res.status(400).json({message: err.message});  
     }
 })
 
-// huy
-router.post('/getAvailableBook', async (req, res) => {
-    try {
-        let code = req.body.code;
-        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free' }, { status: 'pending' }, { new: true })
-        res.status(200).json(freeBook);
-    }
-    catch(err){
-        console.log(err);
-    }
-    }
-)
 
 
-// hủy đăng ký mượn sách
-router.post('/unregisterToBorrowBook', async (req, res) => {
-    let { userId, bookId, bookElementId } = req.body;
 
-    try {
-        let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': { bookId: bookId, bookElementId: bookElementId } } }, { new: true })
-
-        let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
-        return res.status(200).json(userfound)
-    } catch (error) {
-
-        res.status(400).json({ message: error.message })
-    }
-})
 // api gia hạn sách
 router.post('/extendBook', async (req, res) => {
     try {
