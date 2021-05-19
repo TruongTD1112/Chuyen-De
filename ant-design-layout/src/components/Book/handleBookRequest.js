@@ -11,9 +11,19 @@ function HandelBookRequest(){
             key: "_id"
         },
         {
+            title: "Kiểu sách",
+            dataIndex: "code",
+            key: "code"
+        },
+        {
             title: "Người thuê",
             dataIndex : "userId",
             key: "uerId"
+        },
+        {
+            title: "Lớp",
+            dataIndex: "class",
+            key: "class"
         },
         {
             title: "Thời gian",
@@ -31,21 +41,47 @@ function HandelBookRequest(){
             //     </Space>
             // ),
             render: (record) => (
-                  <Popconfirm title="Xác nhận?" onConfirm = {(e) => handle(record, record.key)}>
+                  <Popconfirm title="Xác nhận?" onConfirm = {(e, record) => handle(record)} >
                     <a>Delete</a>
                   </Popconfirm>
             ) 
         },
     ]
 
+    const handle = async (record) => {
+        let data = {
+            userId: record.userId,
+            bookElementId: record._id,
+            code : record.code
+        }
+        try{
+            await bookApi.handleBookRequest(data);
+        }
+        catch(err){
+            throw(err);
+        }
+    }
+    const getData = async () => {
+        let result = await bookApi.getDataRegister();
+        let res = result.map(item =>  {
+            return {
+            _id : item._id,
+            //userId: item.user._id, 
+            //class : item.user.class,
+            }
+        });
+        setData([...res]);
+    }
 
     useEffect(async () => {
         // setData(fakeData);
         await getData();
       }, []);
-
-    const getData = () => {
-
-    }
     
+
+    return (
+        <Table dataSource = {data} columns = {columns}/>
+    )
 }
+
+export default HandelBookRequest
