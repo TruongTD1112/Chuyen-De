@@ -1,8 +1,18 @@
 import React from 'react';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import { Form, Divider, Button, Select, Input, InputNumber, notification } from 'antd'
+import { useState } from 'react';
+import bookApi from '../../api/bookApi'
 
 function DynamicField(props) {
+
+    const getBookInfo = async(data) => {
+        var id = data.target.value;
+        var book_element_res = await bookApi.getListAllBooksElement(id);
+        var book_res = await bookApi.getListAllBooks(book_element_res['rootBook']);
+        // book res -> Render to title,genre,author
+    }
+
     return (
       <Form.List name="fields">
         {(fields, { add, remove }) => {
@@ -16,20 +26,20 @@ function DynamicField(props) {
                     label="Book_Element_ID"
                     rules={[{ required: true }]}
                   >
-                    <Input placeholder="" />
+                    <Input onChange = {getBookInfo}/>
                   </Form.Item>
                   <Form.Item
                     label="Title"
                     name={[index, "Title"]}
                   >
-                    <Input placeholder="Harry Potter" disabled={true}/>
+                    <Input placeholder = "Chưa có thông tin"/>
                   </Form.Item>
                   <Form.Item name={[index, "Genre"]} label="Genre">
-                  <Input placeholder="Fantasy" disabled={true}/>
+                  <Input placeholder = "Chưa có thông tin"/>
 
                   </Form.Item>
                   <Form.Item name={[index, "Author"]} label="Author">
-                  <Input placeholder="J.K.Rowlings" disabled={true}/>
+                  <Input placeholder = "Chưa có thông tin" />
                   </Form.Item>
                   {fields.length > 1 ? (
                     <Button

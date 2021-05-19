@@ -326,7 +326,9 @@ import '../../App.css'
 
                 
           <Divider dashed>Cho mượn sách</Divider>
-          <DynamicField />
+          <DynamicField
+            {...form}
+           />
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Submit
