@@ -11,14 +11,14 @@ const bookApi = {
                 throw err;
             }
         },
-        getListAllBooks: async(data) => {
-            try{
-                var response = await axiosClient.get('/getListAllBooks/' + data);
-                return response;
-            }catch(err){
-                throw err;
-            }
-        },
+        // getListAllBooks: async(data) => {
+        //     try{
+        //         var response = await axiosClient.get('/getListAllBooks/' + data);
+        //         return response;
+        //     }catch(err){
+        //         throw err;
+        //     }
+        // },
         getListAllBooksElement: async () => {
             try{
                 var response = await axiosClient.get('/getListAllBooksElement');
@@ -28,18 +28,18 @@ const bookApi = {
                 throw err;
             }
         },
-        getListAllBooksElement: async(data) => {
-            try{
-                var response = await axiosClient.get('/getListAllBooksElement/' + data);
-                notification.success({message: "Lấy thông tin book_element thành công"});
-                return response;
-            }catch(err){
-                if(err.response){
-                    notification.error({message: err.response.data.message});
-                }
-                throw err;
-            }
-        },
+        // getListAllBooksElement: async(data) => {
+        //     try{
+        //         var response = await axiosClient.get('/getListAllBooksElement/' + data);
+        //         notification.success({message: "Lấy thông tin book_element thành công"});
+        //         return response;
+        //     }catch(err){
+        //         if(err.response){
+        //             notification.error({message: err.response.data.message});
+        //         }
+        //         throw err;
+        //     }
+        // },
     importBook: async (data) => {
         try {
           const response = await axiosClient.post(`importBook`, data);
