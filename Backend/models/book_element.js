@@ -7,7 +7,7 @@ const book_elementSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        enum : ['rent', 'free'],
+        enum : ['rent', 'free', 'pending'],
         required : true
     }, 
     code: {

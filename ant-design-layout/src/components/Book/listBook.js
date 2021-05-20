@@ -62,7 +62,7 @@ function ListBooks(props) {
 
     const getData = async () => {
         let res = await bookApi.getListAllBooks();
-        //console.log(res);
+        console.log(res);
         let resData = res.map((item, index) => {
           return {
             ...item

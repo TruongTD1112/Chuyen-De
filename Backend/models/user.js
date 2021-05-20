@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -48,4 +47,5 @@ const User = Schema({
             expireTime: Date,            
 		}]
 })
+
 module.exports = user = mongoose.model('user', User);

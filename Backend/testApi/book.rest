@@ -11,6 +11,12 @@ Content-Type:application/json
 {
     "title" : "triet hoc",
     "id" : "2"
+
+    "title" : "Triết học",
+    "author": "Vũ Khắc Chinh",
+    "genre": "Đại cương",
+    "amount": "500",
+    "code" : "TRH"
 }
 
 ###
@@ -58,4 +64,47 @@ Content-Type:application/json
 
 "title" : "Triết học", "author": "Vũ Khắc Chinh", "genre": "Đại cương", "amount": "3", "code" : "TH4"
 }
+GET http://localhost:4000/borrowingBooks/6096d4a9e8439a1bc0165a28/1
+Content-Type:application/json
+###
+POST http://localhost:4000/getByListID
+Content-Type:application/json
+
+{
+    "list_id": ["6086e3ed260fe01114f2431d", "6086e3ed260fe01114f2431e"]
+}
+###
+GET http://localhost:4000/getBookInfor/6086e3ed260fe01114f2431d
+Content-Type:application/json
+###
+GET http://localhost:4000/searchBook?&author=Kiên&page=0&title=1986840cdd47591ff7920db9aa292ebfb84cc15d
+
+###
+POST http://localhost:4000/getAvailableBook
+Content-Type:application/json
+
+{
+    "code" : "VH"
+}
+
+###
+POST http://localhost:4000/handleBookRequest
+Content-Type:application/json
+
+{
+    "bookElementId" : "608e5a410ec4fa1b784803ed",
+    "userId" :"60a4af2a2186d82c045122a8",
+    "code" : "VH"
+}
+
+###
+POST http://localhost:4000/registerToBorrowBook
+Content-Type:application/json
+
+{
+    "bookElementId" : "608e5a410ec4fa1b784803ed",
+    "userId" :"60a4af2a2186d82c045122a8",
+    "code" : "VH"
+}
+
 

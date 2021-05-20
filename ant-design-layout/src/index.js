@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import 'antd/dist/antd.css';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import ListBooks from './components/Book/listBook';
+import ImportBook from './components/Book/importBook';
+import ExportBook from './components/Book/exportBook';
 import ListUsers from './components/User/listUser';
 import SignUp from './components/User/signUp';
 import SignUpForAdmin from './components/Admin/signUpForAdmin';
@@ -86,6 +89,9 @@ class SiderDemo extends React.Component {
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
+              <Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>
+              <ExportBook/>
+
               {/*<Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>*/}
               {this.state.display === "createNewAdmin" ? <SignUpForAdmin/>: ""}
               {this.state.display === "changeInformationAdmin" ? <ChangeInformationAdmin/>: ""}
