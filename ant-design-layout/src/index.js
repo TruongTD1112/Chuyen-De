@@ -11,6 +11,8 @@ import SignUp from './components/User/signUp';
 import SignUpForAdmin from './components/Admin/signUpForAdmin';
 import ChangeInformationAdmin from './components/Admin/changeInformationAdmin';
 import BorrowBooks from './components/User/borrowBooks';
+import HandelBookRequest from './components/Book/handleBookRequest';
+import ListUserRent from './components/Book/listUserRent';
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -58,9 +60,6 @@ class SiderDemo extends React.Component {
         <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse}>
           <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="1" icon={<PieChartOutlined />}>
-              Quản lý sách
-            </Menu.Item>
             <Menu.Item key="2" icon={<DesktopOutlined />}>
               Dashboard
             </Menu.Item>
@@ -72,25 +71,34 @@ class SiderDemo extends React.Component {
               <Menu.Item key="createNewUser" onClick={() => {this.setState({display : "createNewUser"})}}>Đăng ký người dùng</Menu.Item>
               <Menu.Item key="lock/unlockUser" onClick={() => {this.setState({display : "lock/unlockUser"})}}>Khóa/Mở khóa người dùng</Menu.Item>
               <Menu.Item key="borrowBooks" onClick={() => {this.setState({display : "borrowBooks"})}}>Đăng ký mượn sách</Menu.Item>
+            </SubMenu>
+            
+            <SubMenu key="book" icon={<UserOutlined />} title="Book Management" icon={<PieChartOutlined />}>
+              <Menu.Item key="showListBook" onClick={() => {this.setState({display : "showListBook"})}}>Thông tin kiểu sách đang có</Menu.Item>
+              <Menu.Item key="ImportBook" onClick={() => {this.setState({display : "ImportBook"})}}>Nhập kho</Menu.Item>
+              <Menu.Item key="ExportBook" onClick={() => {this.setState({display : "ExportBook"})}}>Xuất kho</Menu.Item>
               {/* <Menu.Item key="3">Tom</Menu.Item>
               <Menu.Item key="4">Bill</Menu.Item>
               <Menu.Item key="5">Alex</Menu.Item> * */}
             </SubMenu>
-            {/* <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-              <Menu.Item key="6">Team 1</Menu.Item>
-              <Menu.Item key="8">Team 2</Menu.Item>
-            </SubMenu> */}
-            {/* <Menu.Item key="9" icon={<FileOutlined />}>
-              Files
-            </Menu.Item> */}
+
+            <SubMenu key="rent" icon={<UserOutlined />} title="Rental Book Management" icon={<PieChartOutlined />}>
+              <Menu.Item key="borrowBooks" onClick={() => {this.setState({display : "borrowBooks"})}}>Thuê sách</Menu.Item>
+              <Menu.Item key="ListUserRent" onClick={() => {this.setState({display : "ListUserRent"})}}>Sách đang thuê</Menu.Item>
+              <Menu.Item key="" onClick={() => {this.setState({display : ""})}}>Xuất kho</Menu.Item>
+              {/* <Menu.Item key="3">Tom</Menu.Item>
+              <Menu.Item key="4">Bill</Menu.Item>
+              <Menu.Item key="5">Alex</Menu.Item> * */}
+            </SubMenu>
+
+ 
           </Menu>
         </Sider>
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>
-              <ExportBook/>
+    
 
               {/*<Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>*/}
               {this.state.display === "createNewAdmin" ? <SignUpForAdmin/>: ""}
@@ -98,6 +106,10 @@ class SiderDemo extends React.Component {
               {this.state.display === "createNewUser" ? <SignUp/>: ""}
               {this.state.display === "lock/unlockUser" ? <ListUsers/>: ""}
               {this.state.display === "borrowBooks" ? <BorrowBooks/>: ""}
+              {this.state.display === "showListBook" ? <ListBooks/>: ""}
+              {this.state.display === "ImportBook" ? <ImportBook/>: ""}
+              {this.state.display === "ExportBook" ? <ExportBook/>: ""}
+              {this.state.display === "ListUserRent" ? <ListUserRent/>: ""}
             </Breadcrumb>
             {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
               Giao diện tại đây

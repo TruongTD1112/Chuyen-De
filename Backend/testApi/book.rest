@@ -10,13 +10,11 @@ Content-Type:application/json
 
 {
     "title" : "triet hoc",
-    "id" : "2"
-
-    "title" : "Triết học",
+    "id" : "2",
     "author": "Vũ Khắc Chinh",
     "genre": "Đại cương",
-    "amount": "500",
-    "code" : "TRH"
+    "amount": "3",
+    "code" : "TRHX"
 }
 
 ###

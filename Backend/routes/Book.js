@@ -85,7 +85,7 @@ router.post('/importBook', async (req,res) =>{
                 user: null,
                 rootBook: newBook._id
             })
-            await bookElement.save(err => { console.log(err) });
+            await bookElement.save(err => {console.log(err)});      
             console.log(bookElement);
             list_book.push(bookElement);
         }
@@ -93,8 +93,9 @@ router.post('/importBook', async (req,res) =>{
         await book.findByIdAndUpdate(newBook._id, {listBook: list_book});
         // console.log(req.body.title);
         // console.log(req.body.id);
+
     }
-    catch (err) {
+    catch(err) {
         res.status(400).json({ message: err.message });
     }
     return res.json("đã nhập kho sách thành công!")

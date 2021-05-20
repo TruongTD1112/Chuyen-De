@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const route = require('./routes');
+const route = require('./routes/index');
 const cors = require('cors');
 
 //Connect to mongodb database

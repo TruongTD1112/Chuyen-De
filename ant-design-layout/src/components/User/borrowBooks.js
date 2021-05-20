@@ -267,7 +267,7 @@ import {useState} from 'react';
                 }}
             >
                 <Form.Item>
-                    <h1 class="text-center">Đăng ký mượn sách (Chưa hoàn thiện)</h1>
+                    <h1 class="text-center">Đăng ký mượn sách</h1>
                 </Form.Item>
                 <Form.Item name="userSection">
                     <h2 class="text-center">Thông tin cá nhân</h2>
