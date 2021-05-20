@@ -57,7 +57,16 @@ const bookApi = {
           } catch (error) {
             throw error;
           }
-      },
+    },
+    getInfoBook: async(data) => {
+        try{
+            var response = await axiosClient.post('/getInfoBook/', data);
+            return response;
+        }catch(err){
+            return err;
+        }
+    },
+      
 }
 
 export default bookApi;

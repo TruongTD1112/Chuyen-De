@@ -203,6 +203,7 @@ import '../../App.css'
   
   function App() {
     const [form] = Form.useForm();
+    var user;
     const formItemLayout = {
         labelCol: {
           span: 8,
@@ -225,7 +226,7 @@ import '../../App.css'
             notification.error({message : "Vui lòng nhập email của tài khoản"});
         }
         else {
-            var user = await adminApi.getInformationOfUser(data.email);
+            user = await adminApi.getInformationOfUser(data.email);
             getDataUser(user);
         }
     }
@@ -339,4 +340,4 @@ import '../../App.css'
     );
   }
 
-  export default App;
+export default App;
