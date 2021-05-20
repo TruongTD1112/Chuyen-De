@@ -4,8 +4,11 @@ import { Form, Divider, Button, Select, Input, InputNumber, notification } from 
 import { useState } from 'react';
 import bookApi from '../../api/bookApi'
 
-function DynamicField(props) {
 
+
+function DynamicField(props) {
+    const email = props.email;
+    var total = 0;
     const getBookInfo = async(data) => {
         var id = data.target.value;
         var book_element_res = await bookApi.getInfoBook(id);
@@ -24,8 +27,8 @@ function DynamicField(props) {
     const validate = async (index) => {
       var resData = form.getFieldsValue([index, "Book_element_ID"]);
       var data = resData[index].Book_element_ID
-      //console.log(data);
-      //console.log(1);
+      console.log(data);
+
       try{
           if (data == null) {
               notification.error({message : "Vui lòng nhập id  của sách"});
@@ -33,7 +36,7 @@ function DynamicField(props) {
           else {
               let resData = await bookApi.getInfoBook({"bookID" : data});
               console.log(resData);
-              if(resData === null || typeof(resData) !== 'undefined') notification.error({message: "Không tìm thấy sách"});
+              if(resData === null || typeof(resData) === 'undefined') notification.error({message: "Không tìm thấy sách"});
               else if(resData.status == "pending") notification.error({message : "Sách đã có người đặt"});
               else if(resData.status == "rent") notification.error({message : "Sách đã có người mượn"});
               else{
@@ -53,10 +56,36 @@ function DynamicField(props) {
       catch(err){
           if(err == null) notification.error({message : "Không tìm thấy sách nào"});
       }
+     }
+
+
+    const submit = async () => {
+      // console.log(props);
+      // console.log(email.email);
+      var listIDBook = [];
+      for(let i= 0; i< total; i++){
+        let resData = form.getFieldsValue([i, "Book_element_ID"]);
+        let id = resData[i].Book_element_ID
+         //let id = form.getFieldsValue([i, "Book_element_ID"]).Book_element_ID;
+         listIDBook.push(id);
       }
+      console.log(listIDBook);
+      try{
+         console.log(email.email);
+         notification.success({message: "Thuê thành công"});
+         await bookApi.rentBook({"email": email.email, "listIDBook": listIDBook});
+         notification.success({message: "Thuê thành công"});
+      }
+      catch(err){
+        throw err;
+      }
+
+    }
     return (
+      <div>
       <Form.List name="fields">
         {(fields, { add, remove }) => {
+          total = fields.length;
           return (
             <div>
               {fields.map((field, index) => (
@@ -87,12 +116,11 @@ function DynamicField(props) {
                     <Button type = "primary" onClick = {(e) => validate(index)}>
                         Kiểm tra thông tin
                     </Button>
-                    <Button type = "danger">
-                        Xóa thông tin
-                    </Button>                             
+                             
                 </Form.Item>
                 </Form>
                   {fields.length > 1 ? (
+                  
                     <Button
                       type="danger"
                       className="dynamic-delete-button"
@@ -102,7 +130,9 @@ function DynamicField(props) {
                       Remove Above Field
                     </Button>
                   ) : null}
+                  <a on></a>
                 </div>
+
               ))}
               <Divider />
               <Form.Item>
@@ -114,10 +144,16 @@ function DynamicField(props) {
                   <PlusOutlined /> Mượn thêm sách
                 </Button>
               </Form.Item>
+              <Form.Item>
+            <Button type="primary" htmlType="submit" onClick = {() => {submit()}}>
+              Submit
+            </Button>
+      </Form.Item>
             </div>
           );
         }}
       </Form.List>
+      </div>
     );
 }
 

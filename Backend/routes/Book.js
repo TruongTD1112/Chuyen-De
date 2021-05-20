@@ -15,6 +15,7 @@ router.get('/getListAllBooks', async (req,res) => {
     }
 })
 
+
 router.get('/getListAllBooks/:id', async(req,res) => {
     try{
         var found = book.findOne({'_id' : req.params.id});
@@ -63,30 +64,35 @@ router.get('/getListAllBooksElement/:id', async (req,res) => {
 // api nhap sach vao trong kho
 router.post('/importBook', async (req,res) =>{
     try{
+        let newBook =  new book({
+            title : req.body.title,
+            id : req.body.id,
+            author: req.body.author,
+            genre: req.body.genre,
+            // listBook: list_book,
+            amount: req.body.amount,
+            code : req.body.code
+        })
+        await newBook.save(err => {console.log(err)});
         let amount = req.body.amount;
         let list_book = [];
+        console.log(newBook._id);
         for(let i = 1; i<= amount; i++){
             let bookElement =  new book_element({
                 status: "free",
-                code: req.body.code
+                code: req.body.code,
+                user: null,
+                rootBook: newBook._id
             })
             await bookElement.save(err => {console.log(err)});      
             console.log(bookElement);
             list_book.push(bookElement);
         }
         console.log(list_book);
+        await book.findByIdAndUpdate(newBook._id, {listBook: list_book});
         // console.log(req.body.title);
         // console.log(req.body.id);
-        let newBook =  new book({
-            title : req.body.title,
-            id : req.body.id,
-            author: req.body.author,
-            genre: req.body.genre,
-            listBook: list_book,
-            amount: req.body.amount,
-            code : req.body.code
-        })
-        await newBook.save(err => {console.log(err)});
+
     }
     catch(err) {
         res.status(400).json({ message: err.message });

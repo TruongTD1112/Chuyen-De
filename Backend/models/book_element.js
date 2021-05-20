@@ -13,6 +13,10 @@ const book_elementSchema = mongoose.Schema({
     code: {
         type: String,
         required: true
+    },
+    rootBook: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'book'
     }
 
 })

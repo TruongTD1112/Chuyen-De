@@ -66,6 +66,15 @@ const bookApi = {
             return err;
         }
     },
+    rentBook: async(data) => {
+        try{
+            var response = await axiosClient.post('/rentBook/', data);
+            notification.success({ message: "Mượn sách thành công!" });
+            return response;
+        }catch(err){
+            return err;
+        }
+    },
       
 }
 

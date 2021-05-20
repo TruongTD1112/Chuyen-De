@@ -200,10 +200,11 @@ import DynamicField from "./borrowBookField";
 import "antd/dist/antd.css"
 import adminApi from '../../api/adminApi';
 import '../../App.css'
-  
+import {useState} from 'react';
   function App() {
     const [form] = Form.useForm();
     var user;
+    const [email, setEmail] = useState("");
     const formItemLayout = {
         labelCol: {
           span: 8,
@@ -220,7 +221,8 @@ import '../../App.css'
       };
 
     const validate = async (data) => {
-    data = form.getFieldsValue(['email']);
+    data  = form.getFieldsValue(['email']);
+    setEmail(data);
     try{
         if (data.email === "") {
             notification.error({message : "Vui lòng nhập email của tài khoản"});
@@ -254,6 +256,7 @@ import '../../App.css'
       console.log("VALUES", values);
       alert("Check console for values");
     }
+
     return (
       <div className="App">
             <Form 
@@ -327,14 +330,12 @@ import '../../App.css'
 
                 
           <Divider dashed>Cho mượn sách</Divider>
-          <DynamicField
-            {...form}
-           />
-          <Form.Item>
+          <DynamicField email = {email}/>
+          {/* <Form.Item>
             <Button type="primary" htmlType="submit">
               Submit
             </Button>
-          </Form.Item>
+          </Form.Item>  */}
         </Form>
       </div>
     );

@@ -9,7 +9,6 @@ POST http://localhost:4000/importBook
 Content-Type:application/json
 
 {
-<<<<<<< HEAD
     "title" : "triet hoc",
     "id" : "2"
 }
@@ -26,7 +25,6 @@ Content-Type:application/json
 
 ###
 GET http://localhost:4000/apiUser/getInformation/aloha.669124@sis.hust.edu.vn
-=======
     "title" : "tin hoc dai cuong",
     "id" : "THDC",
     "author": "Tran Dinh Truong",
@@ -53,5 +51,11 @@ Content-Type:application/json
 }
 
 ###
+POST http://localhost:4000/importBook 
+Content-Type:application/json
 
->>>>>>> 1986840cdd47591ff7920db9aa292ebfb84cc15d
+{
+
+"title" : "Triết học", "author": "Vũ Khắc Chinh", "genre": "Đại cương", "amount": "3", "code" : "TH4"
+}
+
