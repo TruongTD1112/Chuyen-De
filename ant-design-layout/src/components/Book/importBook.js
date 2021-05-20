@@ -1,15 +1,9 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
-import {Form, Input, Button, Select} from 'antd';
+import {Form, Input, Button, Select, InputNumber} from 'antd';
 import bookApi from '../../api/bookApi';
 const { Option } = Select;
-function ImportBook(props) {
-        //formRef = React.createRef();
-        const [title, setTitle] = useState('');
-        const [author, setAuthor] = useState('');
-        const [genre, setGenre] = useState('');
-        const [amount, setAmount] = useState('');
-        const [code, setCode] = useState('');
+function ImportBook() {
     
         const [form] = Form.useForm();
         const formItemLayout = {
@@ -32,16 +26,36 @@ function ImportBook(props) {
               span: 22,
             },
           };
-        // onsubmit = () => {
-        //     data = {
-        //         "title": title,
-        //         "author": author,
-        //         "genre": genre,
-        //         "amount": amount,
-        //         "code": code
-        //     }
-        //     bookApi.importBook(data);
-        // }
+        
+        const validate = (data) => {
+            var data = form.getFieldsValue(['author', 'title', 'amount', 'genre', 'code']);
+            var status = "";
+            try{
+                
+            }
+            catch(err){
+
+            }
+        }
+        const getData= async () => {
+            try{
+                var data = form.getFieldsValue(['author', 'title', 'amount', 'genre', 'code']);
+                await bookApi.importBook(data);
+                form.resetFields(['author', 'title', 'amount', 'genre', 'code']);
+            }
+            catch(err){
+                console.log(err);
+            }
+            form.resetFields(['author', 'title', 'amount', 'genre', 'code']);
+
+            // var data = form.getFieldsValue(['author', 'title', 'amount', 'genre', 'code']);
+            // console.log(data);
+        }
+        
+        const cancel = () => {
+            form.resetFields(['author', 'title', 'amount', 'genre', 'code']);
+
+        }
         return (
             <Form 
                 layout = 'horizontal' 
@@ -87,7 +101,7 @@ function ImportBook(props) {
                         required: true,
                     }]}
                 >
-                    <Input placeholder="VD.100"/>                           
+                    <InputNumber min= {1} />                          
                 </Form.Item>
 
                 <Form.Item {...formItemLayout} label = "Mã sách" name = "code"
@@ -99,10 +113,10 @@ function ImportBook(props) {
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
-                    <Button type = "primary">
+                    <Button type = "primary" onClick= {getData}>
                         Save
                     </Button>             
-                    <Button htmlType="button">
+                    <Button htmlType="button" onClick = {cancel}>
                           Cancel
                     </Button>                 
                 </Form.Item>

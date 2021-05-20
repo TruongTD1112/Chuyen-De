@@ -38,6 +38,17 @@ const bookApi = {
             throw error;
           }
       },
+    
+    getByListID: async(data) => {
+        try {
+            const response = await axiosClient.post('/getByListID', data);
+            return response;
+        }
+        catch(error) {
+            throw error;
+        }
+    }
+
 }
 
 export default bookApi;

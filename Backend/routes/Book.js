@@ -61,6 +61,26 @@ router.post('/importBook', async (req, res) => {
     return res.json("đã nhập kho sách thành công!")
 })
 
+
+//api xuat sach tu trong kho ra
+router.post('/exportBook', async (req,res) => {
+    try{
+        var {code, bookId} = req.body;
+        await book_element.findByIdAndRemove(bookId, function(err){
+            console.log(err);
+        });
+        await book.update({$pull: {
+            listBook: bookId
+        }})
+    }
+    catch(err){
+        res.status(400).json({message: err.message});
+    }
+
+    res.json("xuat sach ra thanh cong!");
+})
+
+
 // api lấy thông tin sách trong thư viện có id được chỉ định
 router.get('/getBookInfor', async (req, res) => {
     try {
@@ -143,6 +163,40 @@ router.get('/getFavoriteBooks', async (req, res) => {
     }
 })
 
+// // api đăng kí mượn sách
+// router.post('/registerToBorrowBook', async (req, res) => {
+//     try {
+//         let userId = req.body.userId;
+//         let code = req.body.code;
+
+//         let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free' }, { status: 'pending' }, { new: true })
+//         if (freeBook !== null) {
+
+//             await user.findByIdAndUpdate(userId, { $addToSet: { 'registerBooks': { code: code, bookElementId: freeBook._id } } }, { new: true })
+//             return res.status(200).json({ registerBook: { code: code, bookElementId: freeBook._id } });
+//         } else {
+//             return res.status(200).json({ message: "Hết sách" })
+//         }
+//     } catch (err) {
+//         res.status(400).json({ message: err.message })
+//     }
+// })
+
+// // hủy đăng ký mượn sách
+// router.post('/unregisterToBorrowBook', async (req, res) => {
+//     let { userId, code, bookElementId } = req.body;
+
+//     try {
+//         let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': {code: code, bookElementId: bookElementId } } }, { new: true })
+
+//         let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
+//         return res.status(200).json(userfound)
+//     } catch (error) {
+
+//         res.status(400).json({ message: error.message })
+//     }
+// })
+
 // api đăng kí mượn sách
 router.post('/registerToBorrowBook', async (req, res) => {
     try {
@@ -167,28 +221,51 @@ router.post('/unregisterToBorrowBook', async (req, res) => {
     let { userId, code, bookElementId } = req.body;
 
     try {
-        let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': {code: code, bookElementId: bookElementId } } }, { new: true })
+        let book = await book_element.findOne({_id: bookElementId});
+        if(book.status != "pending") res.json("sách đang không ở trạng thái pending");
+        else{
+            let userfound = await user.findByIdAndUpdate(userId, { $pull: { 'registerBooks': {code: code, bookElementId: bookElementId } } }, { new: true })
 
-        let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
-        return res.status(200).json(userfound)
+            let pendingBook = await book_element.findByIdAndUpdate(bookElementId, { status: 'free' }, { new: true })
+            return res.status(200).json(userfound)
+        }
     } catch (error) {
 
         res.status(400).json({ message: error.message })
     }
 })
+
+// xu ly request muon sach
+router.post('/handleBookRequest', async (req, res) => {
+    try{
+        let {bookElementId, userId, code} = req.body; 
+        let currentDate = (new Date()).getTime()
+        let expireTime = new Date(currentDate + 60 * 24 * 60 * 60 * 1000)
+        await book_element.findOneAndUpdate({ _id: bookElementId, status: 'pending' }, { status: 'rent', user: userId });
+        await user.findOneAndUpdate({_id: userId}, {$pull: {registerBooks: {bookElementId : bookElementId, code : code}}})
+        await user.findByIdAndUpdate(userId, { $addToSet: { 'borrowBooks': { code: code, bookElementId: bookElementId, expireTime: expireTime } } });
+    }  
+    catch(err){
+      res.status(400).json({message: err.message});  
+    }
+})
+
+
+
+
 // api gia hạn sách
 router.post('/extendBook', async (req, res) => {
-    try {
-        var userId = req.params.userId;
-        var bookId = req.params.bookId;
-        var newExpireTime = req.params.newExpireTime;
-        var update = user.updateOne({ 'id': userId }, { $set: { 'borrowBooks': req.params.bookId } });
-        update.exec(function (err) {
-            if (err) return console.log(err);
-            console.log('Book is extended');
+    try{
+        let {userId, code, bookElementId, newExpireTime} = req.body;
+        // let remove = await user.findByIdAndUpdate(userId, {$pull: {borrowBooks: {code: code, bookElementId: bookElementId}}}, {new: true})
+        // let add = await user.findByIdAndUpdate(userId, {$addToSet: {borrowBooks: {code: code, bookElementId: bookElementId, expireTime: newExpireTime}}}, {new: true})
+        // return res.status(200).json(add)
+        let update = await user.updateOne({_id: userId, "borrowBooks.bookElementId": bookElementId},{
+            $set: {"borrowBooks.$.expireTime": newExpireTime}
         })
-    } catch (err) {
-        res.status(400).json({ message: err.message })
+        return res.status(200).json(update)
+    }catch(error){
+        return res.status(400).json(error)
     }
 })
 // lấy danh sách sách đang mượn
@@ -334,4 +411,14 @@ router.get('/getListBookInfor', async (req, res) => {
 //       res.status(400).json({ message: err.message });
 //     }
 //   });
+
+router.post('/getByListID', async (req, res) => {
+    //const records = await Model.find({ '_id': { $in: ids } });
+    const list_id = req.body.list_id;
+    const data = await book_element.find({ '_id': { $in: list_id } });
+    res.json(data);
+}
+);
+
+
 module.exports = router;

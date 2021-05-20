@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -38,24 +37,16 @@ const User = Schema({
 		required: false,
         
 	},
-	registerBooks:{
-		type: [{
-            code: String,
-            bookElementId: String
-        }],
-		required: false
-	},
+	registerBooks: [{
+        code: String,
+        bookElementId: String
+    }],
     
-	borrowBooks:{
-		type: [
-		{
-            bookId: String,
-            expireTime: Date,            
-		}
-		],
-        ref: 'book_element',
-		required: false,
-	}
+	borrowBooks:[{
+        code: String,
+        bookElementId: String,
+        expireTime: Date,            
+    }]
 })
 
 module.exports = user = mongoose.model('user', User);
