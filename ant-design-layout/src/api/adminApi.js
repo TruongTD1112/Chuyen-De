@@ -156,6 +156,26 @@ const adminApi = {
             
             throw err;
         }
+    },
+
+    login: async (data) => {
+        try {
+            var response = await axiosClient.post('/apiAdmin/login', data);
+            notification.success({message : 'Đăng nhập tài khoản thành công.'});
+            return response;
+        } catch (err) {
+            notification.error({message : 'Đăng nhập thất bại.'});
+            
+            if (err.response) {
+                notification.error({message : err.response.data.message});
+            } else if (err.request) {
+
+            } else {
+
+            }
+            
+            throw err;
+        }
     }
 }
 

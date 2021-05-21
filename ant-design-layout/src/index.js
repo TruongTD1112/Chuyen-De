@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout, Menu, Breadcrumb, notification } from 'antd';
 import ListBooks from './components/Book/listBook';
 import ListUsers from './components/User/listUser';
 import SignUp from './components/User/signUp';
 import SignUpForAdmin from './components/Admin/signUpForAdmin';
 import ChangeInformationAdmin from './components/Admin/changeInformationAdmin';
 import BorrowBooks from './components/User/borrowBooks';
+import Login from "./components/Admin/login";
+import WelcomePage from "./components/Admin/welcomePage";
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -17,6 +19,7 @@ import {
 } from '@ant-design/icons';
 import "antd/dist/antd.css"
 import '.'
+import { getCookieByName } from './utils/cookieHandler';
 //import reportWebVitals from './reportWebVitals';
 
 // ReactDOM.render(
@@ -38,15 +41,40 @@ const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
 class SiderDemo extends React.Component {
-  state = {
-    collapsed: false,
-    display: "",
-  };
+  constructor (props) {
+    super(props)
+    this.state = {
+      collapsed: false,
+      display: "",
+      disabled: true,
+    };
+
+    this.login = this.login.bind(this);
+  }
+
 
   onCollapse = collapsed => {
     console.log(collapsed);
     this.setState({ collapsed });
   };
+
+  userAccess = () => {
+    return this.state.disabled;
+  }
+
+  login = () => {
+    var email = getCookieByName("Email");
+    if (email !== "" && email !== undefined) {
+      this.setState({disabled : false, display : "welcome"});
+    };
+  }
+
+  logout = () => {
+    document.cookie = "Email=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "Name=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    notification.success({message : "Bạn đã đăng xuất thành công"});
+    this.setState({display : "login", disabled : true});
+  }
 
   render() {
     const { collapsed } = this.state;
@@ -61,41 +89,33 @@ class SiderDemo extends React.Component {
             <Menu.Item key="2" icon={<DesktopOutlined />}>
               Dashboard
             </Menu.Item>
-            <SubMenu key="admin" icon={<UserOutlined />} title="Admin">
-              <Menu.Item key="createNewAdmin" onClick={() => {this.setState({display : "createNewAdmin"})}}>Đăng ký quản lý</Menu.Item>
+            <SubMenu key="session" icon={<UserOutlined/>} title="Phiên làm việc">
+              <Menu.Item hidden={!this.userAccess()} key="login" onClick={() => {this.setState({display : "login"});}}>Đăng nhập</Menu.Item>
+              <Menu.Item hidden={this.userAccess()} key="logout" onClick={() => this.logout()}>Đăng xuất</Menu.Item>
+            </SubMenu>
+            <SubMenu hidden={this.userAccess()} key="admin" icon={<UserOutlined />} title="Admin">
+              <Menu.Item key="createNewAdmin" path="admin/signUp" onClick={() => {this.setState({display : "createNewAdmin"})}}>Đăng ký quản lý</Menu.Item>
               <Menu.Item key="changeInformationAdmin" onClick={() => {this.setState({display : "changeInformationAdmin"})}}>Thay đổi thông tin cá nhân</Menu.Item>
             </SubMenu>
-            <SubMenu key="sub1" icon={<UserOutlined />} title="User">
+            <SubMenu hidden={this.userAccess()} key="sub1" icon={<UserOutlined />} title="User">
               <Menu.Item key="createNewUser" onClick={() => {this.setState({display : "createNewUser"})}}>Đăng ký người dùng</Menu.Item>
               <Menu.Item key="lock/unlockUser" onClick={() => {this.setState({display : "lock/unlockUser"})}}>Khóa/Mở khóa người dùng</Menu.Item>
               <Menu.Item key="borrowBooks" onClick={() => {this.setState({display : "borrowBooks"})}}>Đăng ký mượn sách</Menu.Item>
-              {/* <Menu.Item key="3">Tom</Menu.Item>
-              <Menu.Item key="4">Bill</Menu.Item>
-              <Menu.Item key="5">Alex</Menu.Item> * */}
             </SubMenu>
-            {/* <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-              <Menu.Item key="6">Team 1</Menu.Item>
-              <Menu.Item key="8">Team 2</Menu.Item>
-            </SubMenu> */}
-            {/* <Menu.Item key="9" icon={<FileOutlined />}>
-              Files
-            </Menu.Item> */}
           </Menu>
         </Sider>
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              {/*<Breadcrumb.Item>Loại sách có trong kho</Breadcrumb.Item>*/}
               {this.state.display === "createNewAdmin" ? <SignUpForAdmin/>: ""}
               {this.state.display === "changeInformationAdmin" ? <ChangeInformationAdmin/>: ""}
               {this.state.display === "createNewUser" ? <SignUp/>: ""}
               {this.state.display === "lock/unlockUser" ? <ListUsers/>: ""}
               {this.state.display === "borrowBooks" ? <BorrowBooks/>: ""}
+              {this.state.display === "login" ? <Login login={this.login}/>: ""}
+              {this.state.display === "welcome" ? <WelcomePage/>: ""}
             </Breadcrumb>
-            {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-              Giao diện tại đây
-            </div> */}
           </Content>
           <Footer style={{ textAlign: 'center' }}>Quản lý thư viện</Footer>
         </Layout>
