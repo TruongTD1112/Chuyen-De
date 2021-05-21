@@ -15,11 +15,45 @@ router.get('/getListAllBooks', async (req,res) => {
     }
 })
 
+router.get('/getListAllBooks/:id', async(req,res) => {
+    try{
+        var found = book.findOne({'_id' : req.params.id});
+        found.exec(function(err,result) {
+            if(err) return console.log(err);
+            if(result === null){
+                res.status(400).json({message: 'No book_element found'});
+            }else{
+                res.json(result);
+            }
+        })
+    }
+    catch(err){
+        res.status(400).json({message : err.message});
+    }
+})
+
 //
 router.get('/getListAllBooksElement', async (req,res) => {
     try{
         const listAllBooks = await book_element.find().sort({createdAt : -1});
         res.json(listAllBooks);
+    }
+    catch(err){
+        res.status(400).json({message : err.message});
+    }
+})
+
+router.get('/getListAllBooksElement/:id', async (req,res) => {
+    try{
+        var found = book_element.findOne({'_id' : req.params.id});
+        found.exec(function(err,result) {
+            if(err) return console.log(err);
+            if(result === null){
+                res.status(400).json({message: 'No book_element found'});
+            }else{
+                res.json(result);
+            }
+        })
     }
     catch(err){
         res.status(400).json({message : err.message});
