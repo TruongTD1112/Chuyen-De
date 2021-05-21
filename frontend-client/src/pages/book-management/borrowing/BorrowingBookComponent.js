@@ -1,14 +1,16 @@
 import React from 'react'
 import { Space, Row, Col, Image } from 'antd'
 const Book = props => {
-    const { name, author, publishTime, borrowTime, expireTime, img } = props.bookInfo
+    const { name, author, borrowTime, expireTime, img, code } = props.bookInfo
     return (
 
         <Row align="middle" gutter={[24,8]} style={{border:"0.2px solid #ccc"}} >
             <Col span={1} >
                 {props.index}
             </Col>
-
+            <Col span={3} >
+                {code}
+            </Col>
             <Col span={2} >
                 <Image
                     src={img}
@@ -21,9 +23,9 @@ const Book = props => {
                 <div style={{ fontSize: 18 }} >{name}</div>
             </Col>
 
-            <Col span={8} >
-                <div>Tác giả: {author}</div>
-                <div>Năm xuất bản: {publishTime}</div>
+            <Col span={5} >
+                Tác giả: {author}
+                
             </Col>
             <Col span={3} >
 

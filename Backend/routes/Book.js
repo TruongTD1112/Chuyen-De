@@ -271,7 +271,7 @@ router.post('/extendBook', async (req, res) => {
 // lấy danh sách sách đang mượn
 router.get('/borrowingBooks', async (req, res) => {
     let { userId, page } = req.query;
-
+    let pageRe = /\D/;
     if (page == undefined || pageRe.test(page) || parseInt(page) <= 0) {
         page = 1;
     }

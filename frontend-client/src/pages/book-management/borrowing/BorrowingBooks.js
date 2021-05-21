@@ -1,37 +1,30 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import {Row, Col, Pagination} from 'antd' 
 import {useHistory, useLocation, useRouteMatch, useParams} from 'react-router-dom'
 import BorrowingBookComponent from './BorrowingBookComponent'
 
+import {getBorrowingBooks} from '../../../api/BookManagement'
+import {useSelector} from 'react-redux'
 const useQuery = ()=> {
     return new URLSearchParams(useLocation().search)
 }
 
 const BorrowingBook = props => {
-    const bookInfo = [{
-        name: 'Math',
-        author: 'Chien',
-        publishTime: '2009',
-        borrowTime: '12/3/2021',
-        expireTime: '12/6/2021',
-        img: 'https://newshop.vn/public/uploads/products/10697/thuy-hu-tap-2-pts.gif'
-    },
-    {
-        name: 'Math',
-        author: 'Chien',
-        publishTime: '2009',
-        borrowTime: '12/3/2021',
-        expireTime: '12/6/2021',
-        img: 'https://newshop.vn/public/uploads/products/10697/thuy-hu-tap-2-pts.gif'
-    }]
+    const [bookInfo, setBookInfo] = useState([]);
     const history = useHistory()
     const query = useQuery()
-
+    const userData = useSelector((state => state.userDataReducer.userData))
     const onChangePage = (page, pageSize)=> {
         history.push(history.location.pathname+"?page="+page)
     }
     const getPage = async(pageNumber) => {
-        console.log(pageNumber)
+        try {
+            let res = await getBorrowingBooks(userData._id, pageNumber)
+            console.log(res)
+        }
+        catch (error){
+            console.log(error)
+        }
     }
     useEffect(()=> {
         let pageNumber = query.get("page")
@@ -47,7 +40,9 @@ const BorrowingBook = props => {
             <Col span={1} >
                 STT
             </Col>
-
+            <Col span={3} >
+                Mã sách
+            </Col >
             <Col span={2} >
                 Bìa sách
             </Col >
@@ -56,13 +51,11 @@ const BorrowingBook = props => {
                 Tên sách
             </Col>
 
-            <Col span={8} >
-                Tác giả / năm xuất bản
-                
+            <Col span={5} >
+                Tác giả                
             </Col>
             <Col span={3} >
                 Ngày mượn
-
             </Col>
             <Col span={3} >
                Hạn trả sách
@@ -70,7 +63,7 @@ const BorrowingBook = props => {
             </Col>
 
         </Row>
-            {bookInfo.map((info, index)=>(
+            {bookInfo.length > 0 && bookInfo.map((info, index)=>(
                 <BorrowingBookComponent key={index} index={index} bookInfo={info}/>
             ))}
         </div>
