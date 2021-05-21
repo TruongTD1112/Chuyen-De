@@ -84,7 +84,36 @@ const bookApi = {
         catch(error) {
             throw error;
         }
+    },
+    getBookRent: async () => {
+        try{
+            var response = await axiosClient.get('/getBookRent');
+            return response;
+        }
+        catch(err){
+            throw err;
+        }
+    },
+
+    getDataRegister: async() => {
+        try{
+            var response = await axiosClient.get('/getDataRegister');
+            return response;
+        }catch(err){
+            return err;
+        }
+    },
+
+
+    handleBookRequest: async(data) => {
+        try{
+            var response = await axiosClient.post('/handleBookRequest', data);
+            return response;
+        }catch(err){
+            return err;
+        }
     }
+
 
 }
 

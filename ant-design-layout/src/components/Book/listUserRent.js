@@ -1,34 +1,41 @@
 import React, {useState, useEffect} from 'react';
-import {Table, Popconfirm} from 'antd';
+import {Table, Popconfirm, notification} from 'antd';
 import bookApi from '../../api/bookApi';
+
 function ListUserRent(){
 
     const [data, setData] = useState([]);
     const columns = [
         {
+            title: "STT",
+            dataIndex : "index",
+            //key: "index"
+        },
+
+        {
             title: "Mã Sách",
             dataIndex : "_id",
-            key: "_id"
+            //key: "_id"
         },
         {
             title: "Kiểu sách",
             dataIndex: "code",
-            key: "code"
+            //key: "code"
         },
         {
             title: "Người thuê",
             dataIndex : "userId",
-            key: "userId"
+            //key: "userId"
         },
         {
             title: "Lớp",
             dataIndex: "class",
-            key: "class"
+            //key: "class"
         },
         {
             title: "Thời gian",
             dataIndex: "time",
-            key: "time"
+            //key: "time"
         },
         {
             title: "Hành động",
@@ -40,49 +47,43 @@ function ListUserRent(){
             //         }}>Delete</a>
             //     </Space>
             // ),
-            render: (record, index) => (
+            render: (index) => (
                   (<div>
-                  <Popconfirm title="Xác nhận?" onConfirm = {(e) => handle(record, index)} >
-                    <a>Xác nhận cho thuê       </a>
+                  <Popconfirm title="Xác nhận?" onConfirm = {() => handle(index)} >
+                    <a>Trả sách</a>
                   </Popconfirm>
-                  <Popconfirm title="Xác nhận?" onConfirm = {(e, record) => handle(record)} >
-                  <a>  Hủy</a>
-                </Popconfirm>
                   </div>)
 
             ) 
         },
     ]
 
-    const handle = async (record, index) => {
+    const handle = async (index) => {
         try{
-            let currentData = data;
-            currentData.splice(index, 1);
-            setData([...currentData]);
-            console.log(currentData);
-
-            let dataEachRow = {
-                "userId": record.userId,
-                "bookElementId": record._id,
-                "code" : record.code
-            }
-            console.log(dataEachRow);
-            await bookApi.handleBookRequest(dataEachRow);
+            notification.success({message: "Trả sách thành công"});
+            //console.log(data);
+            console.log(index)
+            await bookApi.retreiveBook({
+                "bookId" : index._id,
+                "userId" : index.userId
+            });
         }
         catch(err){
             throw(err);
         }
     }
     const getData = async () => {
-        let result = await bookApi.getDataRegister();
-        let res = result.filter((item) => item.user !== null);
-        console.log(res);
-        res = result.map(item =>  {
-            if(item.user === null) return;
+        let result = await bookApi.getBookRent();
+        // let res = result.filter((item) => item.user !== null);
+        // console.log(res);
+
+        let res = result.map((item, index) =>  {
             return {
+            index: ++index,
             _id : item._id,
             code : item.code,
-            userId: item.user._id, 
+            // userId: (item.user.firstName + " " + item.user.lastName), 
+            userId: item.user._id,
             class : item.user.class,
             }
         });

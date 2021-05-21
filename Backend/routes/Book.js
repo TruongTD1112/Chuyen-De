@@ -243,7 +243,7 @@ router.post('/registerToBorrowBook', async (req, res) => {
         let userId = req.body.userId;
         let code = req.body.code;
         let bookElementId = req.body.bookElementId;
-        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free', _id: bookElementId }, { status: 'pending' }, { new: true })
+        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free', _id: bookElementId }, { status: "pending", user: userId}, { new: true })
         console.log(freeBook);
         if (freeBook !== null) {
 

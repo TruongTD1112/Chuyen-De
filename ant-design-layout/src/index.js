@@ -11,7 +11,7 @@ import SignUp from './components/User/signUp';
 import SignUpForAdmin from './components/Admin/signUpForAdmin';
 import ChangeInformationAdmin from './components/Admin/changeInformationAdmin';
 import BorrowBooks from './components/User/borrowBooks';
-import HandelBookRequest from './components/Book/handleBookRequest';
+import HandleBookRequest from './components/Book/handleBookRequest';
 import ListUserRent from './components/Book/listUserRent';
 import {
   DesktopOutlined,
@@ -85,7 +85,7 @@ class SiderDemo extends React.Component {
             <SubMenu key="rent" icon={<UserOutlined />} title="Rental Book Management" icon={<PieChartOutlined />}>
               <Menu.Item key="borrowBooks" onClick={() => {this.setState({display : "borrowBooks"})}}>Thuê sách</Menu.Item>
               <Menu.Item key="ListUserRent" onClick={() => {this.setState({display : "ListUserRent"})}}>Sách đang thuê</Menu.Item>
-              <Menu.Item key="" onClick={() => {this.setState({display : ""})}}>Xuất kho</Menu.Item>
+              <Menu.Item key="HandelBookRequest" onClick={() => {this.setState({display : "HandelBookRequest"})}}>Sách đang chờ thuê</Menu.Item>
               {/* <Menu.Item key="3">Tom</Menu.Item>
               <Menu.Item key="4">Bill</Menu.Item>
               <Menu.Item key="5">Alex</Menu.Item> * */}
@@ -110,6 +110,7 @@ class SiderDemo extends React.Component {
               {this.state.display === "ImportBook" ? <ImportBook/>: ""}
               {this.state.display === "ExportBook" ? <ExportBook/>: ""}
               {this.state.display === "ListUserRent" ? <ListUserRent/>: ""}
+              {this.state.display === "HandelBookRequest" ? <HandleBookRequest/>: ""}
             </Breadcrumb>
             {/* <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
               Giao diện tại đây

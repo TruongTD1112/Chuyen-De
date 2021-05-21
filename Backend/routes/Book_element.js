@@ -61,4 +61,34 @@ router.post('/handleBookRequest', async (req, res) => {
     }
 })
 
+router.get('/getBookRent', async(req, res) =>{
+    try{
+        const listBook = await book_element.find({status: "rent"}).populate('user');
+        res.status(200).json(listBook);
+    }
+    catch(err){
+        res.json({message: err.message});
+    }
+})
+
+router.post('/retreiveBook', async(req, res) => {
+    try{
+        const {bookId, userId} = req.body;
+        await book_element.findByIdAndUpdate(bookId, {status: "free", user: null});
+        await book.findByIdAndUpdate(userId, {$pull: {borrowBooks: {bookElementId : bookId}}})
+    }
+    catch(err){
+        res.status(400).json({message: err.message});
+    }
+})
+
+router.get('/getDataRegister', async(req, res) =>{
+    try{
+        const listBook = await book_element.find({status: "pending", user : {$ne : null, $exists: true}}).populate('user');
+        res.json(listBook);
+    }
+    catch(err){
+        res.status(200).json({message : err.message});
+    }
+})
 module.exports = router;

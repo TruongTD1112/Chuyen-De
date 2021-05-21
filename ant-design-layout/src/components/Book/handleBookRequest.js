@@ -1,10 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {Table, Popconfirm} from 'antd';
+import {Table, Popconfirm, notification} from 'antd';
 import bookApi from '../../api/bookApi';
-function HandelBookRequest(){
+function HandleBookRequest(){
 
     const [data, setData] = useState([]);
     const columns = [
+        {
+            title: "STT",
+            dataIndex : "index",
+            //key: "index"
+        },
         {
             title: "Sách",
             dataIndex : "_id",
@@ -17,7 +22,7 @@ function HandelBookRequest(){
         },
         {
             title: "Người thuê",
-            dataIndex : "userId",
+            dataIndex : "userName",
             key: "uerId"
         },
         {
@@ -41,20 +46,23 @@ function HandelBookRequest(){
             //     </Space>
             // ),
             render: (record) => (
-                  <Popconfirm title="Xác nhận?" onConfirm = {(e, record) => handle(record)} >
-                    <a>Delete</a>
+                  <Popconfirm title="Xác nhận?" onConfirm = {() => handle(record)} >
+                    <a>Xác nhận </a>
+                    <a>Hủy </a>
                   </Popconfirm>
             ) 
         },
     ]
 
     const handle = async (record) => {
+        console.log(record);
         let data = {
-            userId: record.userId,
-            bookElementId: record._id,
-            code : record.code
+            "userId": record.userId,
+            "bookElementId": record._id,
+            "code" : record.code
         }
         try{
+            notification.success({message : "Sách được cho thuê thành công"});
             await bookApi.handleBookRequest(data);
         }
         catch(err){
@@ -63,16 +71,22 @@ function HandelBookRequest(){
     }
     const getData = async () => {
         let result = await bookApi.getDataRegister();
-        let res = result.map(item =>  {
+        console.log(result);
+        // let res = result.filter((item) => item.user !== null);
+        // console.log(res);
+        let res = result.filter(item => item.user !== null);
+        res = res.map((item, index) =>  {
             return {
+            index: ++index,
             _id : item._id,
-            //userId: item.user._id, 
-            //class : item.user.class,
+            code : item.code,
+            userName: (item.user.firstName + " " + item.user.lastName), 
+            userId: item.user._id,
+            class : item.user.class,
             }
         });
         setData([...res]);
     }
-
     useEffect(async () => {
         // setData(fakeData);
         await getData();
@@ -84,4 +98,4 @@ function HandelBookRequest(){
     )
 }
 
-export default HandelBookRequest
+export default HandleBookRequest

@@ -14,3 +14,19 @@ Content-Type:application/json
     "email": "thanh.la170115@sis.hust.edu.vn",
     "listIDBook": ["60a5a7889c33ba17b4613315"]
 }
+
+
+###
+GET http://localhost:4000/
+
+###
+POST http://localhost:4000/retreiveBook
+Content-Type:application/json
+
+{
+    "bookId": "608e5a410ec4fa1b784803f2",
+    "userId" : "60a4af2a2186d82c045122a8"
+}
+
+###
+GET http://localhost:4000/getDataRegister
