@@ -70,7 +70,7 @@ class SiderDemo extends React.Component {
             <SubMenu key="sub1" icon={<UserOutlined />} title="User">
               <Menu.Item key="createNewUser" onClick={() => {this.setState({display : "createNewUser"})}}>Đăng ký người dùng</Menu.Item>
               <Menu.Item key="lock/unlockUser" onClick={() => {this.setState({display : "lock/unlockUser"})}}>Khóa/Mở khóa người dùng</Menu.Item>
-              <Menu.Item key="borrowBooks" onClick={() => {this.setState({display : "borrowBooks"})}}>Đăng ký mượn sách</Menu.Item>
+          
             </SubMenu>
             
             <SubMenu key="book" icon={<UserOutlined />} title="Book Management" icon={<PieChartOutlined />}>
