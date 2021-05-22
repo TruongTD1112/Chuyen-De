@@ -32,6 +32,7 @@ const Book = props => {
         setRegisLoading(true);
         try{
             let res = await registerBorrow(props.userId, code);
+
             if (res.status === 200 && res.data.registerBook !== undefined){
                 openSuccessNotification("Thành công", "Đăng ký mượn thành công, hãy đến thư viện để nhận sách")
                 props.addToRegistered(res.data.registerBook)

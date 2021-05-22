@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+
 import {
-  Button,
-  Input,
-  InputNumber,
-  Popconfirm,
-  Space,
+
   Table,
-  Tag,
-  Modal,
-  Form,
-  Column,
-  Select,
-  Switch,
+
 } from "antd";
 
 import bookApi from '../../api/bookApi';
@@ -28,6 +19,11 @@ function ListBooks(props) {
     // const [editId, setEditId] = useState("");
 
     const columns = [
+        {
+          title: "STT",
+          dataIndex: "index",
+          key: "index"
+        },
         {
             title: "Tên sách",
             dataIndex: "title",
@@ -65,7 +61,9 @@ function ListBooks(props) {
         console.log(res);
         let resData = res.map((item, index) => {
           return {
-            ...item
+      
+            ...item,
+            index: ++index
             // type: item.type._id,
             // typeName: item.type.name,
             // key: index,

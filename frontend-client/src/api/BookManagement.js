@@ -30,9 +30,9 @@ export const unregisterBorrow = (userId, code, bookElementId) => post('/unregist
     code: code,
     bookElementId: bookElementId
 })
-export const extendBook = (userId, bookId, newExpireTime) => post ('/extendBook', {
+export const extendBook = (userId, bookElementId, newExpireTime) => post ('/extendBook', {
     userId: userId,
-    bookId: bookId,
+    bookElementId: bookElementId,
     newExpireTime: newExpireTime
 })
 

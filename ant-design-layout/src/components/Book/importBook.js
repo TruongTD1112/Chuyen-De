@@ -16,8 +16,8 @@ function ImportBook() {
           };
           const tailLayout = {
             wrapperCol: {
-              offset: 11,
-              span: 22,
+              offset: 10,
+              span: 20,
             },
           };
           const tailLayout1 = {
@@ -57,6 +57,8 @@ function ImportBook() {
 
         }
         return (
+            <div>
+                <h1 class="text-center">Nhập kho sách</h1>
             <Form 
                 layout = 'horizontal' 
                 form = {form}
@@ -116,13 +118,14 @@ function ImportBook() {
                     <Button type = "primary" onClick= {getData}>
                         Save
                     </Button>             
-                    <Button htmlType="button" onClick = {cancel}>
+                    <Button htmlType="button" onClick = {cancel} >
                           Cancel
                     </Button>                 
                 </Form.Item>
                 
 
             </Form>
+        </div>
         );
     }
 

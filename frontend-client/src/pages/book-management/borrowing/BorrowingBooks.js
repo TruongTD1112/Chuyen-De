@@ -5,32 +5,31 @@ import BorrowingBookComponent from './BorrowingBookComponent'
 
 import {getBorrowingBooks} from '../../../api/BookManagement'
 import {useSelector} from 'react-redux'
-const useQuery = ()=> {
-    return new URLSearchParams(useLocation().search)
-}
+
 
 const BorrowingBook = props => {
     const [bookInfo, setBookInfo] = useState([]);
-    const history = useHistory()
-    const query = useQuery()
+    const [expireTimes, setExpireTimes] = useState([])
+    const [mount, setMount] = useState(false)
     const userData = useSelector((state => state.userDataReducer.userData))
-    const onChangePage = (page, pageSize)=> {
-        history.push(history.location.pathname+"?page="+page)
+    const onChangePage = async(page, pageSize)=> {
+        await getPage(page)
     }
     const getPage = async(pageNumber) => {
         try {
             let res = await getBorrowingBooks(userData._id, pageNumber)
-            console.log(res)
+            setExpireTimes(res.data.expireTimes)
+            setBookInfo(res.data.borrowBooks)
         }
         catch (error){
             console.log(error)
         }
     }
-    useEffect(()=> {
-        let pageNumber = query.get("page")
-        if (pageNumber == null) pageNumber = 1;
-        getPage(pageNumber)
-    },[history.location.search])
+    useEffect(()=> {    
+        if (!mount)
+            getPage(1)
+        return (() => setMount(true))
+    }, [])
 
     return (
         <Fragment>
@@ -40,31 +39,29 @@ const BorrowingBook = props => {
             <Col span={1} >
                 STT
             </Col>
-            <Col span={3} >
+            <Col span={2} >
                 Mã sách
             </Col >
             <Col span={2} >
                 Bìa sách
             </Col >
 
-            <Col span={7} >
+            <Col span={8} >
                 Tên sách
             </Col>
 
             <Col span={5} >
                 Tác giả                
             </Col>
-            <Col span={3} >
-                Ngày mượn
-            </Col>
-            <Col span={3} >
+
+            <Col span={4} >
                Hạn trả sách
                
             </Col>
 
         </Row>
             {bookInfo.length > 0 && bookInfo.map((info, index)=>(
-                <BorrowingBookComponent key={index} index={index} bookInfo={info}/>
+                <BorrowingBookComponent key={index} index={index} bookInfo={info} expireTime={expireTimes[index]}/>
             ))}
         </div>
         

@@ -30,8 +30,7 @@ const User = Schema({
         type: String,
         enum: ['active', 'inactive', 'locked'],
         required: true
-    }
-    ,
+    },
 	favoriteBooks:{
 		type: [String],
 		required: false,

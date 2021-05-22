@@ -1,5 +1,6 @@
 @import '~antd/dist/antd.css';
 .App {
+  font-family: sans-serif;
   text-align: center;
 }
 
@@ -37,3 +38,4 @@
     transform: rotate(360deg);
   }
 }
+

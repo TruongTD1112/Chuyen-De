@@ -1,43 +1,35 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import {Row, Col, Pagination} from 'antd' 
-import {useHistory, useLocation} from 'react-router-dom'
 import ExtendBookComponent from './ExtendBookComponent'
 
-const useQuery = ()=> {
-    return new URLSearchParams(useLocation().search)
-}
+import {getBorrowingBooks} from '../../../api/BookManagement'
+import {useSelector} from 'react-redux'
 
-const AdjournBook = props => {
-    const bookInfo = [{
-        name: 'Math',
-        author: 'Chien',
-        publishTime: '2009',
-        borrowTime: '12/3/2021',
-        expireTime: '12/6/2021',
-        img: 'https://newshop.vn/public/uploads/products/10697/thuy-hu-tap-2-pts.gif'
-    },
-    {
-        name: 'Math',
-        author: 'Chien',
-        publishTime: '2009',
-        borrowTime: '12/3/2021',
-        expireTime: '12/6/2021',
-        img: 'https://newshop.vn/public/uploads/products/10697/thuy-hu-tap-2-pts.gif'
-    }]
-    const history = useHistory()
-    const query = useQuery()
-
-    const onChangePage = (page, pageSize)=> {
-        history.push(history.location.pathname+"?page="+page)
+const BorrowingBook = props => {
+    const [bookInfo, setBookInfo] = useState([]);
+    const [expireTimes, setExpireTimes] = useState([])
+    const [borrowBookELementId, setborrowBookELementId] = useState([])
+    const [mount, setMount] = useState(false)
+    const userData = useSelector((state => state.userDataReducer.userData))
+    const onChangePage = async (page, pageSize)=> {
+        await getPage(page)
     }
     const getPage = async(pageNumber) => {
-        console.log(pageNumber)
+        try {
+            let res = await getBorrowingBooks(userData._id, pageNumber)
+            setExpireTimes(res.data.expireTimes)
+            setBookInfo(res.data.borrowBooks)
+            setborrowBookELementId(res.data.borrowBookELementId)
+        }
+        catch (error){
+            console.log(error)
+        }
     }
     useEffect(()=> {
-        let pageNumber = query.get("page")
-        if (pageNumber == null) pageNumber = 1;
-        getPage(pageNumber)
-    },[history.location.search])
+        if (!mount)
+        getPage(1)
+        return (() => setMount(true))
+    },[])
 
     return (
         <Fragment>
@@ -47,31 +39,37 @@ const AdjournBook = props => {
             <Col span={1} >
                 STT
             </Col>
-
+            <Col span={2} >
+                Mã sách
+            </Col >
             <Col span={2} >
                 Bìa sách
             </Col >
 
-            <Col span={6} >
+            <Col span={4} >
                 Tên sách
             </Col>
 
-            <Col span={6} >
-                Tác giả / năm xuất bản
-                
+            <Col span={4} >
+                Tác giả                
             </Col>
-            <Col span={3} >
-                Ngày mượn
-
+            <Col span={4} >
+                Thể loại               
             </Col>
-            <Col span={6} style={{textAlign:'center'}} >
+            <Col span={4} >
                Hạn trả sách
                
             </Col>
 
         </Row>
-            {bookInfo.map((info, index)=>(
-                <ExtendBookComponent key={index} index={index} bookInfo={info}/>
+            {bookInfo.length > 0 && bookInfo.map((info, index)=>(
+                <ExtendBookComponent 
+                key={index} 
+                index={index} 
+                bookInfo={info} 
+                expireTime={expireTimes[index]} 
+                bookElementId={borrowBookELementId[index]} 
+                userId={userData._id}/>
             ))}
         </div>
         
@@ -82,4 +80,4 @@ const AdjournBook = props => {
     )
 }
 
-export default AdjournBook
+export default BorrowingBook

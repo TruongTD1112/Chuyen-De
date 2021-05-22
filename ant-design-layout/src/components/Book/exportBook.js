@@ -188,9 +188,7 @@ function ExportBook (){
     return(
       <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={start} disabled={!hasSelected} loading={loading}>
-            Reload
-          </Button>
+
           <span style={{ marginLeft: 8 }}>
             {hasSelected ? `Selected ${selectedRowKeys.length} books` : ''}
           </span>

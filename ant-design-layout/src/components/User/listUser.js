@@ -68,8 +68,9 @@ function ListUsers(props) {
     
 
     const getData = async () => {
+        console.log(1);
         let res = await adminApi.getListAllUsers();
-        //console.log(res);
+        console.log(res);
         let id = 1;
         let resData = res.map((item, index) => {
           return {
@@ -79,6 +80,7 @@ function ListUsers(props) {
         });
         //console.log(res);
         setData(resData);
+        console.log(resData);
     };
 
     useEffect(async () => {

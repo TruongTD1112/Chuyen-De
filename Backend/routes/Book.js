@@ -16,6 +16,24 @@ router.get('/getListAllBooks', async (req, res) => {
     }
 })
 
+
+router.get('/getListAllBooks/:id', async(req,res) => {
+    try{
+        var found = book.findOne({'_id' : req.params.id});
+        found.exec(function(err,result) {
+            if(err) return console.log(err);
+            if(result === null){
+                res.status(400).json({message: 'No book_element found'});
+            }else{
+                res.json(result);
+            }
+        })
+    }
+    catch(err){
+        res.status(400).json({message : err.message});
+    }
+})
+
 //
 router.get('/getListAllBooksElement', async (req, res) => {
     try {
@@ -27,35 +45,57 @@ router.get('/getListAllBooksElement', async (req, res) => {
     }
 })
 
+router.get('/getListAllBooksElement/:id', async (req,res) => {
+    try{
+        var found = book_element.findOne({'_id' : req.params.id});
+        found.exec(function(err,result) {
+            if(err) return console.log(err);
+            if(result === null){
+                res.status(400).json({message: 'No book_element found'});
+            }else{
+                res.json(result);
+            }
+        })
+    }
+    catch(err){
+        res.status(400).json({message : err.message});
+    }
+})
+
 // api nhap sach vao trong kho
-router.post('/importBook', async (req, res) => {
-    try {
+router.post('/importBook', async (req,res) =>{
+    try{
+        let newBook =  new book({
+            title : req.body.title,
+            id : req.body.id,
+            author: req.body.author,
+            genre: req.body.genre,
+            // listBook: list_book,
+            amount: req.body.amount,
+            code : req.body.code
+        })
+        await newBook.save(err => {console.log(err)});
         let amount = req.body.amount;
         let list_book = [];
-        for (let i = 1; i <= amount; i++) {
-            let bookElement = new book_element({
+        console.log(newBook._id);
+        for(let i = 1; i<= amount; i++){
+            let bookElement =  new book_element({
                 status: "free",
-                code: req.body.code
+                code: req.body.code,
+                user: null,
+                rootBook: newBook._id
             })
-            await bookElement.save(err => { console.log(err) });
+            await bookElement.save(err => {console.log(err)});      
             console.log(bookElement);
             list_book.push(bookElement);
         }
         console.log(list_book);
+        await book.findByIdAndUpdate(newBook._id, {listBook: list_book});
         // console.log(req.body.title);
         // console.log(req.body.id);
-        let newBook = new book({
-            title: req.body.title,
-            id: req.body.id,
-            author: req.body.author,
-            genre: req.body.genre,
-            listBook: list_book,
-            amount: req.body.amount,
-            code: req.body.code
-        })
-        await newBook.save(err => { console.log(err) });
+
     }
-    catch (err) {
+    catch(err) {
         res.status(400).json({ message: err.message });
     }
     return res.json("đã nhập kho sách thành công!")
@@ -203,7 +243,7 @@ router.post('/registerToBorrowBook', async (req, res) => {
         let userId = req.body.userId;
         let code = req.body.code;
 
-        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free' }, { status: 'pending' }, { new: true })
+        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free'}, { status: "pending", user: userId}, { new: true })
         if (freeBook !== null) {
 
             await user.findByIdAndUpdate(userId, { $addToSet: { 'registerBooks': { code: code, bookElementId: freeBook._id } } }, { new: true })
@@ -244,6 +284,7 @@ router.post('/handleBookRequest', async (req, res) => {
         await book_element.findOneAndUpdate({ _id: bookElementId, status: 'pending' }, { status: 'rent', user: userId });
         await user.findOneAndUpdate({_id: userId}, {$pull: {registerBooks: {bookElementId : bookElementId, code : code}}})
         await user.findByIdAndUpdate(userId, { $addToSet: { 'borrowBooks': { code: code, bookElementId: bookElementId, expireTime: expireTime } } });
+        return res.status(200).json({message: "Xac nhan thanh cong"})
     }  
     catch(err){
       res.status(400).json({message: err.message});  
@@ -256,14 +297,12 @@ router.post('/handleBookRequest', async (req, res) => {
 // api gia hạn sách
 router.post('/extendBook', async (req, res) => {
     try{
-        let {userId, code, bookElementId, newExpireTime} = req.body;
-        // let remove = await user.findByIdAndUpdate(userId, {$pull: {borrowBooks: {code: code, bookElementId: bookElementId}}}, {new: true})
-        // let add = await user.findByIdAndUpdate(userId, {$addToSet: {borrowBooks: {code: code, bookElementId: bookElementId, expireTime: newExpireTime}}}, {new: true})
-        // return res.status(200).json(add)
+        let {userId,bookElementId, newExpireTime} = req.body;
+        
         let update = await user.updateOne({_id: userId, "borrowBooks.bookElementId": bookElementId},{
             $set: {"borrowBooks.$.expireTime": newExpireTime}
-        })
-        return res.status(200).json(update)
+        }, {new: true})
+        return res.status(200).json({message: "OK"})
     }catch(error){
         return res.status(400).json(error)
     }
@@ -280,17 +319,20 @@ router.get('/borrowingBooks', async (req, res) => {
     if (page < 0) return res.status(400).json({ message: "Khong tim thay" });
     let userFound = await user.findById(userId)
 
-    let listBorrowId = userFound.borrowBooks;
-    if ((page - 1) * BOOK_PER_PAGE > listBorrowId.length) {
+    let listBorrowCode = userFound.borrowBooks.map((elem, index) => elem.code);
+    let listExpireTime = userFound.borrowBooks.map((elem, index) => elem.expireTime)
+    let borrowBookELementId = userFound.borrowBooks.map((elem, index) => elem.bookElementId)
+    if ((page - 1) * BOOK_PER_PAGE > listBorrowCode.length) {
         return res.status(400).json({ message: "Khong tim thay" });
     }
-    let listBookIdNeed = listBorrowId.slice((page - 1) * BOOK_PER_PAGE, Math.min(page * BOOK_PER_PAGE, listBorrowId.length));
-    let getListRootBookPromise = listBookIdNeed.map((elem, index) => {
-        return book_element.findById(elem.bookId).populate('rootBook', { listBook: 0 });
+    let listBookCodeNeed = listBorrowCode.slice((page - 1) * BOOK_PER_PAGE, Math.min(page * BOOK_PER_PAGE, listBorrowCode.length));
+    let getListRootBookPromise = listBookCodeNeed.map((elem, index) => {
+        return book.findOne({code: elem}, {listBook: 0});
     })
     try {
         let result = await Promise.all(getListRootBookPromise);
-        return res.status(200).json(result);
+
+        return res.status(200).json({borrowBooks: result, expireTimes: listExpireTime, borrowBookELementId: borrowBookELementId});
     } catch (err) {
         return res.status(400).json({ message: err.message });
     }
