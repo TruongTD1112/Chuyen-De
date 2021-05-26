@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import {Form, Input, Button,  notification} from 'antd';
 import adminApi from '../../api/adminApi';
+import {getCookieByName} from '../../utils/cookieHandler'
 function ChangeInformationAdmin() {
     
         const [form] = Form.useForm();
@@ -75,7 +76,7 @@ function ChangeInformationAdmin() {
         }
 
         useEffect(() => {
-            var email = "point.life@hust.edu.vn";
+            var email = getCookieByName("Email");
             form.setFieldsValue({'email' : email});
             getDataAdmin(email);
         })
