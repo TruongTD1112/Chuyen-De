@@ -28,7 +28,7 @@ function ImportBook() {
             },
           };
 
-        var listCodeBook;
+        var listCodeBook = "";
         const submit= async () => {
             try{
                 var data = form.getFieldsValue(['author', 'title', 'amount', 'genre', 'code']);
@@ -36,10 +36,10 @@ function ImportBook() {
 
                 console.log(res);
                 for(let i= 0; i< res.length; i++){
-                    listCodeBook += "Mã sách thứ " + (i+1) + " được tạo:   " + res[i]._id + "\n"
+                    listCodeBook += "Mã sách thứ " + (i+1) + " được tạo:        " + res[i]._id + "\n"
                 }
                 console.log(listCodeBook);
-
+                setTimeout(swal("Các mã sách được tạo", listCodeBook, "success"));
                 form.resetFields(['author', 'title', 'amount', 'genre', 'code']);
             }
             catch(err){
@@ -57,10 +57,10 @@ function ImportBook() {
             form.resetFields(['author', 'title', 'amount', 'genre', 'code']);
 
         }
+
         return (
             <div>
                 <h1 class="text-center">Nhập kho sách</h1>
-                {this.state.alert}
             <Form 
                 layout = 'horizontal' 
                 form = {form}
@@ -117,7 +117,7 @@ function ImportBook() {
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
-                    <Button type = "primary" onClick={swal("Good job!", "You clicked the button!", "success")}>
+                    <Button type = "primary" onClick={submit}>
                         Save
                     </Button>             
                     <Button htmlType="button" onClick = {cancel} >

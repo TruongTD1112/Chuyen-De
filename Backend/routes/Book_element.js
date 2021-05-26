@@ -10,24 +10,20 @@ router.post('/getInfoBook', async (req, res) => {
     try{
         const {bookID} = req.body;
         let InforBookElement = await book_element.findOne({_id: bookID});
-        if(InforBookElement == null) return null;
-        else {
-            let InforBook = await book.findById(InforBookElement.rootBook);
-            if(InforBookElement.status == "pending") res.json("sách đang có người đặt");
-            else if (InforBookElement.status == "rent") res.json("sách có người đang thuê");
-            else {
-                let data = {
-                    "title" : InforBook.title,
-                    "genre" : InforBook.genre,
-                    "author" : InforBook.author,
-                    "status" : InforBookElement.status
-                }
-                res.json(data);
+        if(InforBookElement === null) res.json({"status" : "null"})
+        else{
+            let inforBook = await book.findById(InforBookElement.rootBook);
+            let data = {
+                "genre" : inforBook.genre,
+                "title" : inforBook.title,
+                "author": inforBook.author,
+                "status": InforBookElement.status
             }
+            res.json(data);
         }
     }
     catch(err) {
-        res.status(400).json(null);
+        res.json({"status": "null"});
     }
 })
 
@@ -75,7 +71,7 @@ router.post('/retreiveBook', async(req, res) => {
     try{
         const {bookId, userId} = req.body;
         await book_element.findByIdAndUpdate(bookId, {status: "free", user: null});
-        await book.findByIdAndUpdate(userId, {$pull: {borrowBooks: {bookElementId : bookId}}})
+        await user.findByIdAndUpdate(userId, {$pull: {borrowBooks: {bookElementId : bookId}}})
     }
     catch(err){
         res.status(400).json({message: err.message});
@@ -89,6 +85,27 @@ router.get('/getDataRegister', async(req, res) =>{
     }
     catch(err){
         res.status(200).json({message : err.message});
+    }
+})
+
+router.post('/getInforById', async (req, res) =>{
+    let {id} = req.body;
+    try{
+        let result = await book_element.findById(id);
+        res.json(result);
+    }
+    catch(err) {
+        res.status(400).json({message: err.message});
+    }
+})
+
+router.get('/remove', async (req, res) => {
+    try{
+        await book.remove({})
+        await book_element.remove({})
+    }
+    catch(err){
+        res.status(400).json({message : err.message});
     }
 })
 module.exports = router;

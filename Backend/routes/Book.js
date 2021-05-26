@@ -93,7 +93,7 @@ router.post('/importBook', async (req,res) =>{
         await book.findByIdAndUpdate(newBook._id, {listBook: list_book});
         // console.log(req.body.title);
         // console.log(req.body.id);
-
+        res.json(list_book);
     }
     catch(err) {
         res.status(400).json({ message: err.message });
@@ -106,12 +106,12 @@ router.post('/importBook', async (req,res) =>{
 router.post('/exportBook', async (req,res) => {
     try{
         var {code, bookId} = req.body;
-        await book_element.findByIdAndRemove(bookId, function(err){
-            console.log(err);
-        });
-        await book.update({$pull: {
+        var book_e = await book_element.findById(bookId);
+        var bookFather = await book.findById(book_e.rootBook);
+        await book.findByIdAndUpdate(book_e.rootBook, {amount:(bookFather.amount-1)});
+        await book.findByIdAndUpdate(book_e.rootBook, {$pull: {
             listBook: bookId
-        }})
+        }});
     }
     catch(err){
         res.status(400).json({message: err.message});

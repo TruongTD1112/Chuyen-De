@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import bookApi from '../../api/bookApi';
-import {Table, Button, Space, Popconfirm} from 'antd';
+import {Table, Button, Space, Popconfirm, notification} from 'antd';
 function ExportBook (){
-    // const onClick = () => {
-    //     list = [];
-    //     bookApi.exportBook(list);
-    // }
+
     const [hasSelected, setHasSelected] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -16,7 +13,7 @@ function ExportBook (){
         {
             title: "Mã từng cuốn sách",
             dataIndex: "_id",
-            key: "idEachBook",
+            key: "_id",
             //sorter: (a, b) => a.name.length - b.name.length
         },
         {
@@ -32,15 +29,8 @@ function ExportBook (){
         {
             title: "Hành động",
             dataIndex: "",
-            // render: (record) => (
-            //     <Space>
-            //         <a onClick = {() => {
-            //             bookApi.exportBook({"bookId" : record._id})
-            //         }}>Delete</a>
-            //     </Space>
-            // ),
             render: (record) => (
-                  <Popconfirm title="Sure to delete?" onConfirm = {(e) => handleDelete(record, record.key)}>
+                  <Popconfirm title="Sure to delete?" onConfirm = {() => handleDelete(record)}>
                     <a>Delete</a>
                   </Popconfirm>
             ) 
@@ -80,11 +70,16 @@ function ExportBook (){
       },
     ]
 
-    const handleDelete = async (record, key) => {
-      var index  = record.index;
-      console.log(index);
+    const handleDelete = async (record) => {
+   
       await bookApi.exportBook({"bookId" : record._id});
-      var res = dataEachRow;
+      
+      var temp = [];
+      for(let i= 0; i< dataEachRow.length; i++){
+        if(dataEachRow[i]._id != record._id) temp.push(dataEachRow[i]);
+      }
+      setdataEachRow([...temp]);
+      // var res = dataEachRow;
       // for(let i = 0; i< res.length; i++){
       //   for(let j = 0; j< res[i].length; j++){
       //     if(res[i][j] === record){
@@ -92,11 +87,11 @@ function ExportBook (){
       //     }
       //   }
       // }
-      var index1 = res[index].indexOf(record);
-      console.log(index1);
-      res[index].splice(index1, 1)
-      console.log(res);
-      setdataEachRow([...res]);
+      // var index1 = res[index].indexOf(record);
+      // console.log(index1);
+      // res[index].splice(index1, 1)
+      // console.log(res);
+      // setdataEachRow([...res]);
     }
 
 
@@ -139,10 +134,10 @@ function ExportBook (){
         let res = await bookApi.getListAllBooks();
         //console.log(res);
         let resData = res.map((item, index) => {
-          const listBook = item.listBook;
 
           return {
             ...item, 
+            index: index,
             key: item._id
             // type: item.type._id,
             // typeName: item.type.name,
@@ -169,8 +164,9 @@ function ExportBook (){
             resDataEachRow.push(result);
         }
         //console.log(resDataEachRow);
-        
+        // console.log(resDataEachRow);
         setdataEachRow(resDataEachRow);
+        console.log(dataEachRow);
         // if (res.photo) setImageUrl(res.photo);
         // setData(resData);
     };
@@ -178,7 +174,7 @@ function ExportBook (){
       // setData(fakeData);
       await getData();
     }, []);
-
+    let dem = 0;
     const expandableTable = {   
 
             expandedRowRender: async (record) => (
@@ -187,20 +183,15 @@ function ExportBook (){
           };
     return(
       <div>
-        <div style={{ marginBottom: 16 }}>
-
-          <span style={{ marginLeft: 8 }}>
-            {hasSelected ? `Selected ${selectedRowKeys.length} books` : ''}
-          </span>
-        </div>
         <Table
           columns={columns}
           //{...expandableTable}
           expandable={{
-            expandedRowRender:  (record, index)=> {
+            expandedRowRender:  (index)=> {
+              console.log(index);
                 return <Table 
                     columns = {columnsEachRow}
-                    dataSource = {dataEachRow[index]}/>
+                    dataSource = {dataEachRow[index.index]}/>
             //     const dataEachRow = await bookApi.getByListID({"list_id" : record.listBook});
             //     //console.log(dataEachRow);
             // return (

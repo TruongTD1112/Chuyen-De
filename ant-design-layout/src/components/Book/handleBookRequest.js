@@ -64,6 +64,11 @@ function HandleBookRequest(){
         try{
             notification.success({message : "Sách được cho thuê thành công"});
             await bookApi.handleBookRequest(data);
+            let tempData = [];
+            for(let i= 0; i< data.length; i++){
+                if(record._id !== data[i]._id) tempData.push(data[i]);
+            }
+            setData([...tempData]);
         }
         catch(err){
             throw(err);

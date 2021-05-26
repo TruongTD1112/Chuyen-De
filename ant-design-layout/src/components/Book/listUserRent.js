@@ -62,6 +62,12 @@ function ListUserRent(){
                 "bookId" : index._id,
                 "userId" : index.userId
             });
+            var tempData = [];
+            for(let i = 0; i< data.length; i++){
+                if(data[i]._id != index._id) tempData.push(data[i]); 
+            }
+            console.log(tempData);
+            setData([...tempData])
         }
         catch(err){
             throw(err);
