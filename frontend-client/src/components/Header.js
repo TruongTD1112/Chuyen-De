@@ -41,6 +41,9 @@ const Header = props => {
         document.cookie = "Name=; expires=Thu, 01 Jan 1970 00:00:00 UTC;"
         history.push('/client/login')
     }
+    const logo = <Link to="/client/home">
+                    <Avatar src={require('../assets/book-image/logo.png').default} size="large" />
+                </Link>
     useEffect(()=> {
         if (props.userData._id == ""){
             let temp = props.userData;
@@ -57,7 +60,7 @@ const Header = props => {
         <PageHeader
             ghost={false}
             
-            title="Logo"
+            title={logo}
             subTitle={<div>
                 <Menu mode="horizontal" onSelect={onSelectMenuItem} selectedKeys={[props.itemSelected]}  >
                     <Menu.Item key={HOME}><Link to={HOME}>Trang chủ</Link></Menu.Item>
@@ -67,7 +70,7 @@ const Header = props => {
             </div>}
 
             extra={[
-                <label key="1" style={{fontWeight:'bold'}} >{props.userData.firstName == "" ? getCookieByName('Name'): props.userData.firstName}</label>,
+                <label key="1" style={{fontWeight:'bold'}} >{props.userData.firstName == "" ? getCookieByName('Name'): props.userData.firstName +" " + props.userData.lastName}</label>,
                 <Dropdown key="2" overlay={<AvatarDropdownMenu logout={logout}/>} placement="bottomLeft">
                     <Avatar key="5" style={{ backgroundColor: '#87d068' }} size={40} icon={<UserOutlined  />}  />
                 </Dropdown>

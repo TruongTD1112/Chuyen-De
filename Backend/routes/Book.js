@@ -242,9 +242,8 @@ router.post('/registerToBorrowBook', async (req, res) => {
     try {
         let userId = req.body.userId;
         let code = req.body.code;
-        let bookElementId = req.body.bookElementId;
-        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free', _id: bookElementId }, { status: "pending", user: userId}, { new: true })
-        console.log(freeBook);
+
+        let freeBook = await book_element.findOneAndUpdate({ code: code, status: 'free'}, { status: "pending", user: userId}, { new: true })
         if (freeBook !== null) {
 
             await user.findByIdAndUpdate(userId, { $addToSet: { 'registerBooks': { code: code, bookElementId: freeBook._id } } }, { new: true })
@@ -280,10 +279,12 @@ router.post('/unregisterToBorrowBook', async (req, res) => {
 router.post('/handleBookRequest', async (req, res) => {
     try{
         let {bookElementId, userId, code} = req.body; 
-
+        let currentDate = (new Date()).getTime()
+        let expireTime = new Date(currentDate + 60 * 24 * 60 * 60 * 1000)
         await book_element.findOneAndUpdate({ _id: bookElementId, status: 'pending' }, { status: 'rent', user: userId });
         await user.findOneAndUpdate({_id: userId}, {$pull: {registerBooks: {bookElementId : bookElementId, code : code}}})
-        await user.findByIdAndUpdate(userId, { $addToSet: { 'borrowBooks': { code: code, bookElementId: bookElementId } } });
+        await user.findByIdAndUpdate(userId, { $addToSet: { 'borrowBooks': { code: code, bookElementId: bookElementId, expireTime: expireTime } } });
+        return res.status(200).json({message: "Xac nhan thanh cong"})
     }  
     catch(err){
       res.status(400).json({message: err.message});  
@@ -295,23 +296,21 @@ router.post('/handleBookRequest', async (req, res) => {
 
 // api gia hạn sách
 router.post('/extendBook', async (req, res) => {
-    try {
-        var userId = req.params.userId;
-        var bookId = req.params.bookId;
-        var newExpireTime = req.params.newExpireTime;
-        var update = user.updateOne({ 'id': userId }, { $set: { 'borrowBooks': req.params.bookId } });
-        update.exec(function (err) {
-            if (err) return console.log(err);
-            console.log('Book is extended');
-        })
-    } catch (err) {
-        res.status(400).json({ message: err.message })
+    try{
+        let {userId,bookElementId, newExpireTime} = req.body;
+        
+        let update = await user.updateOne({_id: userId, "borrowBooks.bookElementId": bookElementId},{
+            $set: {"borrowBooks.$.expireTime": newExpireTime}
+        }, {new: true})
+        return res.status(200).json({message: "OK"})
+    }catch(error){
+        return res.status(400).json(error)
     }
 })
 // lấy danh sách sách đang mượn
 router.get('/borrowingBooks', async (req, res) => {
     let { userId, page } = req.query;
-
+    let pageRe = /\D/;
     if (page == undefined || pageRe.test(page) || parseInt(page) <= 0) {
         page = 1;
     }
@@ -320,17 +319,20 @@ router.get('/borrowingBooks', async (req, res) => {
     if (page < 0) return res.status(400).json({ message: "Khong tim thay" });
     let userFound = await user.findById(userId)
 
-    let listBorrowId = userFound.borrowBooks;
-    if ((page - 1) * BOOK_PER_PAGE > listBorrowId.length) {
+    let listBorrowCode = userFound.borrowBooks.map((elem, index) => elem.code);
+    let listExpireTime = userFound.borrowBooks.map((elem, index) => elem.expireTime)
+    let borrowBookELementId = userFound.borrowBooks.map((elem, index) => elem.bookElementId)
+    if ((page - 1) * BOOK_PER_PAGE > listBorrowCode.length) {
         return res.status(400).json({ message: "Khong tim thay" });
     }
-    let listBookIdNeed = listBorrowId.slice((page - 1) * BOOK_PER_PAGE, Math.min(page * BOOK_PER_PAGE, listBorrowId.length));
-    let getListRootBookPromise = listBookIdNeed.map((elem, index) => {
-        return book_element.findById(elem.bookId).populate('rootBook', { listBook: 0 });
+    let listBookCodeNeed = listBorrowCode.slice((page - 1) * BOOK_PER_PAGE, Math.min(page * BOOK_PER_PAGE, listBorrowCode.length));
+    let getListRootBookPromise = listBookCodeNeed.map((elem, index) => {
+        return book.findOne({code: elem}, {listBook: 0});
     })
     try {
         let result = await Promise.all(getListRootBookPromise);
-        return res.status(200).json(result);
+
+        return res.status(200).json({borrowBooks: result, expireTimes: listExpireTime, borrowBookELementId: borrowBookELementId});
     } catch (err) {
         return res.status(400).json({ message: err.message });
     }
@@ -404,12 +406,12 @@ router.get('/getAllRegisteredBookId', async (req, res) => {
 router.get('/getListBookInfor', async (req, res) => {
 
     try {
-        let listId = req.query.listId;
+        let codes = req.query.codes;
 
-        listId = JSON.parse(listId)
+        codes = JSON.parse(codes)
 
-        let getInfoPromise = listId.map((elem, index) => {
-            return book.findById(elem, { listBook: 0 })
+        let getInfoPromise = codes.map((elem, index) => {
+            return book.findOne({code: elem}, { listBook: 0 })
         })
         Promise.all(getInfoPromise)
             .then(result => {

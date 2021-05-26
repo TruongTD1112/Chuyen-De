@@ -37,15 +37,15 @@ const User = Schema({
         
 	},
 	registerBooks: [{
-            code: String,
-            bookElementId: String
-        }],
+        code: String,
+        bookElementId: String
+    }],
     
 	borrowBooks:[{
-            code: String,
-            bookElementId: String,
-            expireTime: Date,            
-		}]
+        code: String,
+        bookElementId: String,
+        expireTime: Date,            
+    }]
 })
 
 module.exports = user = mongoose.model('user', User);

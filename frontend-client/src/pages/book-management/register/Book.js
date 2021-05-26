@@ -13,8 +13,8 @@ const Book = props => {
     let onUnregisterBorrow = async() => {
         try{
             setUnregisLoading(true);
-            let book = registeredBooks.filter((b => b.bookId === _id))[0]        
-            let unregisSuccess = await unregisterBorrow(props.userId, _id, book.bookElementId)
+            let book = registeredBooks.filter((b => b.code === code))[0]        
+            let unregisSuccess = await unregisterBorrow(props.userId, code ,book.bookElementId)
             if (unregisSuccess.status === 200){
                 props.setRegisteredBooks(unregisSuccess.data.registerBooks)
                 openSuccessNotification("Thành công", "Đã hủy đăng ký mượn sách ")
@@ -31,7 +31,8 @@ const Book = props => {
     const onRegisterBorrow = async () => {        
         setRegisLoading(true);
         try{
-            let res = await registerBorrow(props.userId, _id, code);
+            let res = await registerBorrow(props.userId, code);
+
             if (res.status === 200 && res.data.registerBook !== undefined){
                 openSuccessNotification("Thành công", "Đăng ký mượn thành công, hãy đến thư viện để nhận sách")
                 props.addToRegistered(res.data.registerBook)
@@ -50,7 +51,7 @@ const Book = props => {
     }
     useEffect(()=> {
 
-        setIsRegistered(registeredBooks.some(book => book.bookId === _id))
+        setIsRegistered(registeredBooks.some(book => book.code === code))
 
     },[_id])
     return(

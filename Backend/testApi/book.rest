@@ -105,4 +105,13 @@ Content-Type:application/json
     "code" : "TRHX"
 }
 
+###
+POST http://localhost:4000/handleBookRequest
+Content-Type:application/json
+
+{
+    "userId": "60a49c336ee0822b80ad7b8c",
+    "code":"TH",
+    "bookElementId": "608e5aa40ec4fa1b784806ef"
+}
 
