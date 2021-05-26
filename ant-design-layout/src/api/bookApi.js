@@ -112,7 +112,18 @@ const bookApi = {
         }catch(err){
             return err;
         }
-    }
+    },
+    
+    
+    retreiveBook: async(data) => {
+        try{
+            var response = await axiosClient.post('/retreiveBook', data);
+            return response;
+        }catch(err){
+            return err;
+        }
+    },
+
 
 
 }

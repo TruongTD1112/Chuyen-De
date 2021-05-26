@@ -106,7 +106,7 @@ class SiderDemo extends React.Component {
           
             </SubMenu>
             
-            <SubMenu key="book" icon={<UserOutlined />} title="Book Management" icon={<PieChartOutlined />}>
+            <SubMenu hidden={this.userAccess()} key="book" icon={<UserOutlined />} title="Book Management" icon={<PieChartOutlined />}>
               <Menu.Item key="showListBook" onClick={() => {this.setState({display : "showListBook"})}}>Thông tin kiểu sách đang có</Menu.Item>
               <Menu.Item key="ImportBook" onClick={() => {this.setState({display : "ImportBook"})}}>Nhập kho</Menu.Item>
               <Menu.Item key="ExportBook" onClick={() => {this.setState({display : "ExportBook"})}}>Xuất kho</Menu.Item>
@@ -115,7 +115,7 @@ class SiderDemo extends React.Component {
               <Menu.Item key="5">Alex</Menu.Item> * */}
             </SubMenu>
 
-            <SubMenu key="rent" icon={<UserOutlined />} title="Rental Book Management" icon={<PieChartOutlined />}>
+            <SubMenu hidden={this.userAccess()} key="rent" icon={<UserOutlined />} title="Rental Book Management" icon={<PieChartOutlined />}>
               <Menu.Item key="borrowBooks" onClick={() => {this.setState({display : "borrowBooks"})}}>Thuê sách</Menu.Item>
               <Menu.Item key="ListUserRent" onClick={() => {this.setState({display : "ListUserRent"})}}>Sách đang thuê</Menu.Item>
               <Menu.Item key="HandelBookRequest" onClick={() => {this.setState({display : "HandelBookRequest"})}}>Sách đang chờ thuê</Menu.Item>

@@ -33,11 +33,6 @@ function ListUserRent(){
             //key: "class"
         },
         {
-            title: "Thời gian",
-            dataIndex: "time",
-            //key: "time"
-        },
-        {
             title: "Hành động",
             dataIndex: "",
             // render: (record) => (
@@ -83,7 +78,7 @@ function ListUserRent(){
             _id : item._id,
             code : item.code,
             // userId: (item.user.firstName + " " + item.user.lastName), 
-            userId: item.user._id,
+            userId: (item.user.firstName + " " + item.user.lastName),
             class : item.user.class,
             }
         });

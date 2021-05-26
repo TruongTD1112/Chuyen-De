@@ -1,10 +1,11 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
-import {Form, Input, Button, Select, InputNumber} from 'antd';
+import {Form, Input, Button, Select, InputNumber, Alert} from 'antd';
 import bookApi from '../../api/bookApi';
+import SweetAlert from "react-bootstrap-sweetalert";
+import swal from 'sweetalert'
 const { Option } = Select;
 function ImportBook() {
-    
         const [form] = Form.useForm();
         const formItemLayout = {
             labelCol: {
@@ -26,26 +27,26 @@ function ImportBook() {
               span: 22,
             },
           };
-        
-        const validate = (data) => {
-            var data = form.getFieldsValue(['author', 'title', 'amount', 'genre', 'code']);
-            var status = "";
-            try{
-                
-            }
-            catch(err){
 
-            }
-        }
-        const getData= async () => {
+        var listCodeBook;
+        const submit= async () => {
             try{
                 var data = form.getFieldsValue(['author', 'title', 'amount', 'genre', 'code']);
-                await bookApi.importBook(data);
+                var res = await bookApi.importBook(data);
+
+                console.log(res);
+                for(let i= 0; i< res.length; i++){
+                    listCodeBook += "Mã sách thứ " + (i+1) + " được tạo:   " + res[i]._id + "\n"
+                }
+                console.log(listCodeBook);
+
                 form.resetFields(['author', 'title', 'amount', 'genre', 'code']);
             }
             catch(err){
                 console.log(err);
             }
+
+            
             form.resetFields(['author', 'title', 'amount', 'genre', 'code']);
 
             // var data = form.getFieldsValue(['author', 'title', 'amount', 'genre', 'code']);
@@ -59,6 +60,7 @@ function ImportBook() {
         return (
             <div>
                 <h1 class="text-center">Nhập kho sách</h1>
+                {this.state.alert}
             <Form 
                 layout = 'horizontal' 
                 form = {form}
@@ -115,7 +117,7 @@ function ImportBook() {
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
-                    <Button type = "primary" onClick= {getData}>
+                    <Button type = "primary" onClick={swal("Good job!", "You clicked the button!", "success")}>
                         Save
                     </Button>             
                     <Button htmlType="button" onClick = {cancel} >

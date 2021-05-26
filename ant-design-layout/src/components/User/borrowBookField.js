@@ -36,7 +36,7 @@ function DynamicField(props) {
           else {
               let resData = await bookApi.getInfoBook({"bookID" : data});
               console.log(resData);
-              if(resData === null || typeof(resData) === 'undefined') notification.error({message: "Không tìm thấy sách"});
+              if(resData.status == "null") notification.error({message: "Không tìm thấy sách"});
               else if(resData.status == "pending") notification.error({message : "Sách đã có người đặt"});
               else if(resData.status == "rent") notification.error({message : "Sách đã có người mượn"});
               else{
@@ -74,7 +74,6 @@ function DynamicField(props) {
          console.log(email.email);
          notification.success({message: "Thuê thành công"});
          await bookApi.rentBook({"email": email.email, "listIDBook": listIDBook});
-         notification.success({message: "Thuê thành công"});
       }
       catch(err){
         throw err;
