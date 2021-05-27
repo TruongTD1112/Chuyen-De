@@ -120,6 +120,24 @@ router.post('/exportBook', async (req,res) => {
     res.json("xuat sach ra thanh cong!");
 })
 
+//api xuat sach tu trong kho ra
+router.get('/exportBook', async (req,res) => {
+    try{
+        var {cd, id} = req.body;
+        await book_element.findByIdAndRemove(bookId, function(err){
+            console.log(err);
+        });
+        await book.update({$pull: {
+            listBook: id
+        }})
+    }
+    catch(err){
+        res.status(400).json({message: err.message});
+    }
+
+    res.json("xoa sach thanh cong");
+})
+
 
 // api lấy thông tin sách trong thư viện có id được chỉ định
 router.get('/getBookInfor', async (req, res) => {
@@ -272,6 +290,23 @@ router.post('/unregisterToBorrowBook', async (req, res) => {
     } catch (error) {
 
         res.status(400).json({ message: error.message })
+    }
+})
+
+// api laasy thong tin sach
+router.post('/getBookInfor', async (req, res) => {
+    try {
+        let { cd } = req.query;
+        book_element.findOne({ code: cd }, { 'listBook': 0, 'amount': 0 })
+            .then(result => {
+                if (result == null) return res.status(200).send('notfound')
+                else return res.status(200).send(result)
+            })
+            .catch(err => {
+                return res.status(400).json({ message: err })
+            })
+    } catch (err) {
+        res.status(400).json({ message: err.message })
     }
 })
 
