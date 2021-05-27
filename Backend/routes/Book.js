@@ -437,6 +437,38 @@ router.get('/getAllRegisteredBookId', async (req, res) => {
         return res.status(400).json({ message: err })
     }
 })
+
+// lấy danh sách sách đang mượn
+router.get('/muonsach', async (req, res) => {
+    
+    if (page == undefined || pageRe.test(page) || parseInt(page) <= 0) {
+        page = 1;
+    }
+    page = parseInt(page)
+
+    if (page < 0) return res.status(400).json({ message: "Khong tim thay" });
+    let userFound = await user.findById(userId)
+
+    let listBorrowCode = userFound.borrowBooks.map((elem, index) => elem.code);
+    let listExpireTime = userFound.borrowBooks.map((elem, index) => elem.expireTime)
+    let borrowBookELementId = userFound.borrowBooks.map((elem, index) => elem.bookElementId)
+    if ((page - 1) * BOOK_PER_PAGE > listBorrowCode.length) {
+        return res.status(400).json({ message: "Khong tim thay" });
+    }
+    let listBookCodeNeed = listBorrowCode.slice((page - 1) * BOOK_PER_PAGE, Math.min(page * BOOK_PER_PAGE, listBorrowCode.length));
+    let getListRootBookPromise = listBookCodeNeed.map((elem, index) => {
+        return book.findOne({code: elem}, {listBook: 0});
+    })
+    try {
+        let result = await Promise.all(getListRootBookPromise);
+
+        return res.status(200).json({borrowBooks: result, expireTimes: listExpireTime, borrowBookELementId: borrowBookELementId});
+    } catch (err) {
+        return res.status(400).json({ message: err.message });
+    }
+
+
+})
 // lấy  thông tin của 1 list các quyển sách
 router.get('/getListBookInfor', async (req, res) => {
 
