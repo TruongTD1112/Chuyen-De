@@ -489,6 +489,111 @@ router.get('/getListBookInfor', async (req, res) => {
     }
 
 })
+
+router.get('/getinforbook', async (req, res) => {
+    try{
+        const {bookID} = req.body;
+        let InforBookElement = await book_element.findOne({_id: bookID});
+        if(InforBookElement == null) return null;
+        else {
+            let InforBook = await book.findById(InforBookElement.rootBook);
+            if(InforBookElement.status == "pending") res.json("Sasch da duoc thue");
+            else if (InforBookElement.status == "rent") res.json("sach da duoc thue");
+            else {
+                let data = {
+                    "title" : InforBook.title,
+                    "genre" : InforBook.genre,
+                    "author" : InforBook.author,
+                    "status" : InforBookElement.status
+                }
+                res.json(data);
+            }
+        }
+    }
+    catch(err) {
+        res.status(400).json(null);
+    }
+	
+	router.post('/getbookRent', async(req, res) =>{
+		// lay danh sach sach da thue
+    try{
+        const listBook = await book_element.find({status: "rent"}).populate('user');
+        res.status(200).json(listBook);
+    }
+    catch(err){
+        res.json({message: err.message});
+    }
+})
+
+router.get('/getBook', async (req, res) => {
+    try{
+        const {bookID} = req.body;
+        let InforBookElement = await book_element.findOne({_id: bookID});
+        if(InforBookElement == null) return null;
+        else {
+            let InforBook = await book.findById(InforBookElement.rootBook);
+            if(InforBookElement.status == "pending") res.json("Sasch da duoc thue");
+            else if (InforBookElement.status == "rent") res.json("sach da duoc thue");
+            else {
+                let data = {
+                    "title" : InforBook.title,
+                    "genre" : InforBook.genre,
+                    "author" : InforBook.author,
+                    "status" : InforBookElement.status
+                }
+                res.json(data);
+            }
+        }
+    }
+    catch(err) {
+        res.status(400).json(null);
+    }
+	
+	router.post('/getbookRent', async(req, res) =>{
+		// lay danh sach sach da thue
+    try{
+        const listBook = await book_element.find({status: "rent"}).populate('user');
+        res.status(200).json(listBook);
+    }
+    catch(err){
+        res.json({message: err.message});
+    }
+})
+
+router.get('/getfavoriteBook', async (req, res) => {
+    try{
+        const {bookID} = req.body;
+        let InforBookElement = await book_element.findOne({_id: bookID});
+        if(InforBookElement == null) return null;
+        else {
+            let InforBook = await book.findById(InforBookElement.rootBook);
+            if(InforBookElement.status == "pending") res.json("Sasch da duoc thue");
+            else if (InforBookElement.status == "rent") res.json("sach da duoc thue");
+            else {
+                let data = {
+                    "title" : InforBook.title,
+                    "genre" : InforBook.genre,
+                    "author" : InforBook.author,
+                    "status" : InforBookElement.status
+                }
+                res.json(data);
+            }
+        }
+    }
+    catch(err) {
+        res.status(400).json(null);
+    }
+	
+	router.post('/getbookRent', async(req, res) =>{
+		// lay danh sach sach da thue
+    try{
+        const listBook = await book_element.find({status: "rent"}).populate('user');
+        res.status(200).json(listBook);
+    }
+    catch(err){
+        res.json({message: err.message});
+    }
+})
 //Save one
 // router.post("/importMaterial", async (req, res) => {
 //     try {
